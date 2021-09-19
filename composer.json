@@ -54,7 +54,8 @@
     "vendor-dir": "wp-content/vendor"
   },
   "require": {
-    "johnpbloch/wordpress": "5.7.x"
+    "johnpbloch/wordpress": "5.7.x",
+    "wpackagist-plugin/cloudflare-stream": "1.0.4"
   },
   "require-dev": {
     "wpackagist-theme/twentyseventeen":"~2.0",
