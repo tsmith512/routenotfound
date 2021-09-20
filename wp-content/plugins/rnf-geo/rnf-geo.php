@@ -110,8 +110,12 @@ function rnf_geo_get_trips($trip_id = null) {
 
   if (empty($transient)) {
     $options = get_option('rnf_geo_settings');
-    $endpoint = $options['location_tracker_endpoint'] . '/api/trips';
+    $endpoint = $options['location_tracker_endpoint'] . '/trips';
     $result = wp_remote_get($endpoint);
+
+    if (!is_array($result) || is_wp_error($result)) {
+      return false;
+    }
 
     if ($result['response']['code'] == 200) {
       $trips = json_decode($result['body']);
@@ -134,7 +138,7 @@ function rnf_geo_get_trips($trip_id = null) {
   }
 
   foreach ($trips as &$trip) {
-    $trip->wp_category = get_term_by('slug', $trip->machine_name, 'category');
+    $trip->wp_category = get_term_by('slug', $trip->slug, 'category');
   }
 
   return empty($trips) ? false : $trips;
@@ -172,7 +176,7 @@ function rnf_geo_ajax_create_trip_category() {
 
   $trip = reset($trips);
   $term = wp_insert_term($trip->label, 'category', array(
-    'slug' => $trip->machine_name
+    'slug' => $trip->slug
   ));
   add_term_meta($term['term_id'], 'rnf_geo_trip_id', $trip->id, true);
 
@@ -230,7 +234,7 @@ function rnf_geo_is_post_during_trip(&$post) {
       $trip_details = reset($trip_details);
 
       // So is this post actually dated _during_ the trip it is about?
-      $post->rnf_geo_post_is_on_trip = ($trip_details->starttime <= $timestamp && $timestamp <= $trip_details->endtime);
+      $post->rnf_geo_post_is_on_trip = ($trip_details->start <= $timestamp && $timestamp <= $trip_details->end);
 
       if ($post->rnf_geo_post_is_on_trip) {
         rnf_geo_attach_city($post);
@@ -259,8 +263,12 @@ function rnf_geo_attach_city(&$post) {
 
   if (empty($transient)) {
     $options = get_option('rnf_geo_settings');
-    $endpoint = $options['location_tracker_endpoint'] . "/api/location/history/timestamp/{$timestamp}";
+    $endpoint = $options['location_tracker_endpoint'] . "/waypoint/{$timestamp}";
     $result = wp_remote_get($endpoint);
+
+    if (!is_array($result) || is_wp_error($result)) {
+      return;
+    }
 
     if ($result['response']['code'] == 200) {
       $location = json_decode($result['body']);
@@ -269,15 +277,14 @@ function rnf_geo_attach_city(&$post) {
       // of the post type, we can assume that the location service has recent data. If
       // the difference is more than 2 hours, the location tracker may be behind. Don't
       // save for very long so we can refresh later.
-      $ttl = (abs($timestamp - $location->time) < 2 * HOUR_IN_SECONDS) ? YEAR_IN_SECONDS : HOUR_IN_SECONDS;
+      $ttl = (abs($timestamp - $location->timestamp) < 2 * HOUR_IN_SECONDS) ? YEAR_IN_SECONDS : HOUR_IN_SECONDS;
       set_transient('rnf_geo_city_for_' . $timestamp, $location, $ttl);
     }
   } else {
     $location = $transient;
   }
 
-  // Check that there's a city name instead of "NM, US", but use the full text.
-  $post->rnf_geo_city = (!empty($location->city)) ? $location->full_city : false;
+  $post->rnf_geo_city = $location->label ?: false;
 }
 
 /**
@@ -287,9 +294,10 @@ function rnf_geo_attach_city(&$post) {
  */
 function rnf_geo_current_trip() {
   $trips =  rnf_geo_get_trips();
+
   $current_trip = false;
   foreach ($trips as $trip) {
-    if ($trip->starttime < time() && time() < $trip->endtime) {
+    if ($trip->start < time() && time() < $trip->end) {
       // @TODO: Though there's no business logic case for two trips to overlap,
       // this would only return the lowest index trip in the case that multiple
       // are active...

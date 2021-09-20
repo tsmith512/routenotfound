@@ -23,10 +23,10 @@ function rnf_geo_admin_page() {
           <?php /* This is a terrible way to mark a row, do it better. */ ?>
           <tr <?php if (isset($current->id) && $trip->id == $current->id) { echo "style='font-weight: bold; background-color: #ccffcc;'"; } ?>>
             <td><?php print $trip->id; ?></td>
-            <td><?php print $trip->machine_name; ?></td>
+            <td><?php print $trip->slug; ?></td>
             <td><?php print $trip->label; ?></td>
-            <td><?php print $trip->starttime; ?></td>
-            <td><?php print $trip->endtime; ?></td>
+            <td><?php print $trip->start; ?></td>
+            <td><?php print $trip->end; ?></td>
             <td>
               <?php
                 if ($trip->wp_category !== false) {
