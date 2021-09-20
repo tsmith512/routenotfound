@@ -16,7 +16,7 @@
     if (!tripsToLoad) {
       // Request from the location server API all of the Trips in the database.
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', tqor.locationApi + '/api/trips');
+      xhr.open('GET', tqor.locationApi + '/trips');
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.onload = function () {
         if (xhr.status === 200) {
@@ -40,7 +40,7 @@
     callback = callback || false;
 
     var tripXhr = new XMLHttpRequest();
-    tripXhr.open('GET', tqor.locationApi + '/api/trips/' + trip_id);
+    tripXhr.open('GET', tqor.locationApi + '/trip/' + trip_id);
     tripXhr.setRequestHeader('Content-Type', 'application/json');
     tripXhr.onload = function () {
       if (tripXhr.status === 200) {
@@ -61,7 +61,7 @@
   var mapToTimestamp = function(timestamp) {
     if (!window.tqor.cache.hasOwnProperty(timestamp)) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', tqor.locationApi + '/api/location/history/timestamp/' + timestamp);
+      xhr.open('GET', tqor.locationApi + '/waypoint/' + timestamp);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.onload = function () {
         if (xhr.status === 200) {
@@ -83,7 +83,7 @@
   var addMarkerToTimestamp = function(timestamp) {
     if (!window.tqor.cache.hasOwnProperty(timestamp)) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', tqor.locationApi + '/api/location/history/timestamp/' + timestamp);
+      xhr.open('GET', tqor.locationApi + '/waypoint/' + timestamp);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.onload = function () {
         if (xhr.status === 200) {
@@ -183,6 +183,9 @@
     tripsToLoad = tqor.trips_with_content;
   }
 
+  // @TODO: With initial release of rnf-location-service 2.0, there is not a
+  // `boundaries` prop on trips, because I didn't document it and thus forgot
+  // about it... so this whole bit doesn't work. I'll fix it later.
   if (tqor.hasOwnProperty('start')) {
     switch (window.tqor.start.type) {
       case 'trip':
@@ -201,7 +204,7 @@
             }
 
             // If the post was written during this trip, add a marker
-            if (trip.starttime <= window.tqor.start.timestamp && window.tqor.start.timestamp <= trip.endtime) {
+            if (trip.start <= window.tqor.start.timestamp && window.tqor.start.timestamp <= trip.end) {
               addMarkerToTimestamp(window.tqor.start.timestamp);
             }
           });
@@ -212,7 +215,7 @@
       default:
         var currentTimestamp = Date.now() / 1000;
         loadAllTrips(tripsToLoad, function(tripResponse){
-          if (tripResponse.starttime <= currentTimestamp && currentTimestamp <= tripResponse.endtime) {
+          if (tripResponse.start <= currentTimestamp && currentTimestamp <= tripResponse.end) {
             // This trip is happening now, zoom to it.
             if (tripResponse.hasOwnProperty('boundaries')) {
               window.map.fitBounds(tripResponse.boundaries, {animate: true, padding: [10, 10]});
@@ -228,18 +231,18 @@
   // associated category. So this check is asking "are we on a trip with content?"
   if (document.querySelectorAll('.rnf-geo-map-widget .trip-info').length) {
     var currentLocation = new XMLHttpRequest();
-    currentLocation.open('GET', tqor.locationApi + '/api/location/latest');
+    currentLocation.open('GET', tqor.locationApi + '/waypoint');
     currentLocation.setRequestHeader('Content-Type', 'application/json');
     currentLocation.onload = function () {
       if (currentLocation.status === 200) {
         var response = JSON.parse(currentLocation.responseText);
         if (response.hasOwnProperty('time')) {
           // Set the current city in the widget:
-          document.getElementById('rnf-location').innerText = response.full_city;
+          document.getElementById('rnf-location').innerText = response.label;
 
           // Set the current time in the widget:
           var now = Math.floor(new Date().getTime() / 1000);
-          var then = response.time;
+          var then = response.timestamp;
           var diff = (now - then) / 60 / 60;
           var output = (diff < 1) ? "less than an hour ago" : (Math.floor(diff) + " hours ago")
           document.getElementById('rnf-timestamp').innerText = output;
