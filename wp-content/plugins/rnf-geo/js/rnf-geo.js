@@ -183,15 +183,14 @@
     tripsToLoad = tqor.trips_with_content;
   }
 
-  // @TODO: With initial release of rnf-location-service 2.0, there is not a
-  // `boundaries` prop on trips, because I didn't document it and thus forgot
-  // about it... so this whole bit doesn't work. I'll fix it later.
   if (tqor.hasOwnProperty('start')) {
     switch (window.tqor.start.type) {
       case 'trip':
         loadTrip(window.tqor.start.trip_id, function(trip) {
           if (trip.hasOwnProperty('boundaries')) {
-            window.map.fitBounds(trip.boundaries, {animate: true, padding: [10, 10]});
+            var bounds = trip.boundaries.match(/-?\d+\.\d+/g);
+            var boxes = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]];
+            window.map.fitBounds(boxes, {animate: true, padding: [10, 10]});
           }
         });
         break;
@@ -200,7 +199,9 @@
           loadTrip(window.tqor.start.trip_id, function(trip) {
             // If this trip has a line, zoom the map in
             if (trip.hasOwnProperty('boundaries')) {
-              window.map.fitBounds(trip.boundaries, {animate: true, padding: [10, 10]});
+              var bounds = trip.boundaries.match(/-?\d+\.\d+/g);
+              var boxes = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]];
+              window.map.fitBounds(boxes, {animate: true, padding: [10, 10]});
             }
 
             // If the post was written during this trip, add a marker
