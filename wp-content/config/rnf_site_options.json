@@ -1,5 +1,5 @@
 {
-    "active_plugins": "a:10:{i:0;s:27:\"autoptimize\/autoptimize.php\";i:1;s:17:\"postie\/postie.php\";i:2;s:31:\"rnf-analytics\/rnf-analytics.php\";i:3;s:19:\"rnf-geo\/rnf-geo.php\";i:4;s:21:\"rnf-meta\/rnf-meta.php\";i:5;s:31:\"rnf-overrides\/rnf-overrides.php\";i:6;s:25:\"rnf-postie\/rnf-postie.php\";i:7;s:37:\"rocket-lazy-load\/rocket-lazy-load.php\";i:8;s:35:\"tumblr-importer\/tumblr-importer.php\";i:9;s:17:\"wp-cfm\/wp-cfm.php\";}",
+    "active_plugins": "a:11:{i:0;s:27:\"autoptimize\/autoptimize.php\";i:1;s:39:\"cloudflare-stream\/cloudflare-stream.php\";i:2;s:25:\"cloudflare\/cloudflare.php\";i:3;s:17:\"postie\/postie.php\";i:4;s:31:\"rnf-analytics\/rnf-analytics.php\";i:5;s:19:\"rnf-geo\/rnf-geo.php\";i:6;s:21:\"rnf-meta\/rnf-meta.php\";i:7;s:31:\"rnf-overrides\/rnf-overrides.php\";i:8;s:25:\"rnf-postie\/rnf-postie.php\";i:9;s:37:\"rocket-lazy-load\/rocket-lazy-load.php\";i:10;s:17:\"wp-cfm\/wp-cfm.php\";}",
     "blog_charset": "UTF-8",
     "blog_public": "0",
     "blogdescription": "",
@@ -31,7 +31,7 @@
     "stylesheet": "rnf-alfa",
     "tag_base": "",
     "template": "twentyseventeen",
-    "theme_mods_rnf-alfa": "a:3:{s:18:\"custom_css_post_id\";i:-1;s:12:\"header_image\";s:13:\"remove-header\";s:18:\"nav_menu_locations\";a:0:{}}",
+    "theme_mods_rnf-alfa": "a:3:{s:18:\"custom_css_post_id\";i:-1;s:12:\"header_image\";s:13:\"remove-header\";s:18:\"nav_menu_locations\";a:1:{s:3:\"top\";i:30;}}",
     "thumbnail_crop": "1",
     "thumbnail_size_h": "150",
     "thumbnail_size_w": "150",
