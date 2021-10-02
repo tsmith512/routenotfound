@@ -780,7 +780,7 @@ a:hover .nav-title,
 }
 
 .navigation-top .wrap {
-  max-width: 1000px;
+  max-width: 1400px;
   padding: 0;
 }
 
@@ -2636,7 +2636,7 @@ p > object:only-child {
   /* Layout */
 
   .wrap {
-    max-width: 1000px;
+    max-width: 1400px;
     padding-left: 3em;
     padding-right: 3em;
 
@@ -2650,19 +2650,20 @@ p > object:only-child {
   }
 
   .has-sidebar:not(.error404) #primary {
-    float: left;
-    width: 58%;
+    flex: 58;
+    max-width: 680px;
+    margin-right: 6%;
   }
 
   .has-sidebar #secondary {
     float: right;
-    width: 36%;
+    flex: 38;
   }
 
   #secondary .secondary_inner {
-    position: -webkit-sticky;
     position: sticky;
-    top: 1em;
+    top: 2em;
+    height: calc(100vh - 4em);
   }
 
   .admin-bar #secondary .secondary_inner {
@@ -2707,7 +2708,7 @@ p > object:only-child {
   }
 
   .navigation-top .wrap {
-    max-width: 1000px;
+    max-width: 1400px;
     /* The font size is 14px here and we need 50px padding in ems */
     padding: 0 3.4166666666667em;
   }
