@@ -311,6 +311,11 @@ template {
   clear: both;
 }
 
+.flex-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
 /*--------------------------------------------------------------
 5.0 Typography
 --------------------------------------------------------------*/
@@ -3050,12 +3055,24 @@ p > object:only-child {
     width: 32px;
   }
 
+  /* @TODO: This won't catch all of these crazy variations, but: */
+  .page .site-main > article {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
   body:not(.has-sidebar):not(.page-one-column) .page-header,
   body.has-sidebar.error404 #primary .page-header,
   body.page-two-column:not(.archive) #primary .entry-header,
   body.page-two-column.archive:not(.has-sidebar) #primary .page-header {
     float: left;
     width: 36%;
+  }
+
+  .page .site-main > article > .entry-header {
+    flex: 38;
+    width: auto !important;
   }
 
   .blog:not(.has-sidebar) #primary article,
@@ -3067,6 +3084,12 @@ p > object:only-child {
   body.page-two-column #comments {
     float: right;
     width: 58%;
+  }
+
+  .page .site-main > article > .entry-content {
+    flex: 58;
+    width: auto !important;
+    margin-left: 6%;
   }
 
   .blog .site-main > article,
@@ -3243,26 +3266,24 @@ p > object:only-child {
   }
 
   .site-footer .widget-column.footer-widget-1 {
-    float: left;
-    width: 36%;
+    flex: 36;
   }
 
   .site-footer .widget-column.footer-widget-2 {
-    float: right;
-    width: 58%;
+    margin-left: 6%;
+    flex: 58;
   }
 
   .social-navigation {
     clear: left;
     float: left;
     margin-bottom: 0;
-    width: 36%;
+    flex: 36;
   }
 
   .site-info {
-    float: left;
     padding: 0.7em 0 0;
-    width: 58%;
+    flex: 58;
   }
 
   .social-navigation + .site-info {
