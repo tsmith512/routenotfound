@@ -2639,6 +2639,14 @@ p > object:only-child {
     max-width: 1000px;
     padding-left: 3em;
     padding-right: 3em;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .page-header {
+    width: 100%;
   }
 
   .has-sidebar:not(.error404) #primary {
@@ -2647,20 +2655,18 @@ p > object:only-child {
   }
 
   .has-sidebar #secondary {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 3em;
+    float: right;
     width: 36%;
-  }
-  .archive.has-sidebar #secondary {
-    top: 5em; /* To make room for the archive title on those pages */
   }
 
   #secondary .secondary_inner {
     position: -webkit-sticky;
     position: sticky;
     top: 1em;
+  }
+
+  .admin-bar #secondary .secondary_inner {
+    padding-top: 3em;
   }
 
   .error404 #primary {
