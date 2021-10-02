@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32ef2f6d7b1bbf0ecd190c29f5e5a715",
+    "content-hash": "1dab33bed0492b68de8fe83f5178232d",
     "packages": [
         {
             "name": "composer/installers",
@@ -282,7 +282,7 @@
                 "url": "https://downloads.wordpress.org/plugin/cloudflare.4.5.1.zip"
             },
             "require": {
-                "composer/installers": "~1.0"
+                "composer/installers": "~1.0 || ~2.0"
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/cloudflare/"
@@ -324,16 +324,6 @@
                 "type": "git",
                 "url": "https://github.com/filamentgroup/loadCSS.git",
                 "reference": "v2.0.1"
-            },
-            "type": "library"
-        },
-        {
-            "name": "mapbox/mapbox.js-bower",
-            "version": "3.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mapbox/mapbox.js-bower.git",
-                "reference": "v3.1.1"
             },
             "type": "library"
         },

@@ -36,18 +36,6 @@
           "reference": "v2.0.1"
         }
       }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "mapbox/mapbox.js-bower",
-        "version": "3.1.1",
-        "source": {
-          "url": "https://github.com/mapbox/mapbox.js-bower.git",
-          "type": "git",
-          "reference": "v3.1.1"
-        }
-      }
     }
   ],
   "config": {
@@ -65,8 +53,7 @@
     "wpackagist-plugin/rocket-lazy-load":"2.3.4",
     "wpackagist-plugin/postie":"1.9.53",
     "fancyapps/fancybox":"3.5.x",
-    "filamentgroup/loadcss":"2.x.x",
-    "mapbox/mapbox.js-bower":"3.1.x"
+    "filamentgroup/loadcss":"2.x.x"
   },
   "extra": {
     "wordpress-install-dir": "wp"
