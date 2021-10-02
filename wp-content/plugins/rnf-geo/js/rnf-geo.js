@@ -1,6 +1,9 @@
 (function(){
   'use strict';
 
+  /**
+   * Initialize the Mapbox GL JS library and map container
+   */
   mapboxgl.accessToken = tqor.mapboxApi;
   const map = new mapboxgl.Map({
     container: 'map',
@@ -12,14 +15,15 @@
   map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
 
   /**
-   * When the Map object is initialized, populate it based on what page we're on
+   * When the Map object is initialized, populate it based on current page
    */
   map.on('load', () => {
     const allTrips =
       (window.tqor?.trips_with_content?.length) ? tqor.trips_with_content : [];
 
+    // Did WordPress rnf-geo tell us what to load?
     if (window.tqor?.start) {
-      // We have a single post or a trip: get the line.
+      // Single post or a trip: get the line.
       if (['post', 'trip'].indexOf(window.tqor.start.type) > -1) {
         loadTrip(window.tqor.start.trip_id, (trip) => {
           const bounds = trip.boundaries.match(/-?\d+\.\d+/g);
@@ -33,17 +37,25 @@
         addMarkerForTimestamp(window.tqor.start.timestamp);
       }
 
-      // We have neither: load everything I've written about.
+      // There's an active trip and we're looking at it or a general index
+      if (window.tqor.start.current === true) {
+        setupCurrentLocation();
+      }
+
+      // Neither trip or post: load everything I've written about.
       if (window.tqor.start.type === false) {
         loadAllTrips(allTrips);
       }
     } else {
       loadAllTrips(allTrips);
     }
+
+    setupMapJumpLinks();
+    setupMapCloseButton();
   });
 
   /**
-   * Given an array of trip IDs, load and display GeoJSON lines.
+   * Given an array of trip IDs, load and display GeoJSON lines for each.
    */
   const loadAllTrips = (tripsToLoad, callback) => {
     callback = callback || false;
@@ -121,7 +133,7 @@
         .catch(error => {
           console.log(error);
           return false;
-        })
+        });
     } else {
       waypoint = window.tqor.cache[timestamp];
     }
@@ -135,14 +147,14 @@
   const addMarkerForTimestamp = async (timestamp) => {
     const waypoint = await getGeoForTimestamp(timestamp);
 
-    if (window.rnfPostMarker) {
-      window.rnfPostMarker.remove();
-      delete window.rnfPostMarker;
+    if (window.tqor.rnfPostMarker) {
+      window.tqor.rnfPostMarker.remove();
+      delete window.tqor.rnfPostMarker;
     }
 
     // Currently only showing one of these at a time, but it'd be cool to do
     // something more interactive.
-    window.rnfPostMarker = new mapboxgl.Marker({ color: '#FF3300' })
+    window.tqor.rnfPostMarker = new mapboxgl.Marker({ color: '#FF3300' })
       .setLngLat(waypoint)
       .addTo(map);
   }
@@ -162,89 +174,66 @@
    * Snag each of the "location links" in article headers. When clicked, add a
    * marker and move the map. Reveal the map if currently hidden on mobile.
    */
-  document.querySelectorAll('article a.tqor-map-jump').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
+  const setupMapJumpLinks = () => {
+    document.querySelectorAll('article a.tqor-map-jump').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
 
-      const timestamp = link.getAttribute('data-timestamp');
-      addMarkerForTimestamp(timestamp);
-      moveMapToTimestamp(timestamp);
+        const timestamp = link.getAttribute('data-timestamp');
+        addMarkerForTimestamp(timestamp);
+        moveMapToTimestamp(timestamp);
 
-      map.getContainer().parentElement.classList.add('visible');
-      map.resize();
+        map.getContainer().parentElement.classList.add('visible');
+        map.resize();
+      });
     });
-  });
+  };
 
   /**
    * Wire up my hacky little "close map" button.
    */
-  document.getElementById('mapclose').addEventListener('click', (e) => {
-    e.preventDefault();
-    map.getContainer().parentElement.classList.remove('visible');
-  });
+  const setupMapCloseButton = () => {
+    document.getElementById('mapclose').addEventListener('click', (e) => {
+      e.preventDefault();
+      map.getContainer().parentElement.classList.remove('visible');
+    });
+  };
 
-  /*
-
-  // @TODO: Only remaining piece is "on a trip now, highlight that."
-      default:
-        var currentTimestamp = Date.now() / 1000;
-        loadAllTrips(tripsToLoad, function(tripResponse){
-          if (tripResponse.start <= currentTimestamp && currentTimestamp <= tripResponse.end) {
-            // This trip is happening now, zoom to it.
-            if (tripResponse.hasOwnProperty('boundaries')) {
-              window.map.fitBounds(tripResponse.boundaries, {animate: true, padding: [10, 10]});
-            }
-          }
-        });
-        // @TODO: Where should we center the map in this case?
-    }
-  }
-
-  // @TODO: There's probably a better way to handle this logic, but WordPress
-  // will only output this information panel if we're on a trip that has an
-  // associated category. So this check is asking "are we on a trip with content?"
-  if (document.querySelectorAll('.rnf-geo-map-widget .trip-info').length) {
-    var currentLocation = new XMLHttpRequest();
-    currentLocation.open('GET', tqor.locationApi + '/waypoint');
-    currentLocation.setRequestHeader('Content-Type', 'application/json');
-    currentLocation.onload = function () {
-      if (currentLocation.status === 200) {
-        var response = JSON.parse(currentLocation.responseText);
-        if (response.hasOwnProperty('time')) {
-          // Set the current city in the widget:
-          document.getElementById('rnf-location').innerText = response.label;
-
-          // Set the current time in the widget:
-          var now = Math.floor(new Date().getTime() / 1000);
-          var then = response.timestamp;
-          var diff = (now - then) / 60 / 60;
-          var output = (diff < 1) ? "less than an hour ago" : (Math.floor(diff) + " hours ago")
-          document.getElementById('rnf-timestamp').innerText = output;
-          window.tqor.currentLocation = response;
+  /**
+   * We have information about a current trip, so there's a little info box in
+   * the map display.
+   */
+  const setupCurrentLocation = () => {
+    fetch(`${tqor.locationApi}/waypoint`)
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error(JSON.stringify(res));
         }
+      })
+      .then(payload => {
+        if (payload.hasOwnProperty('timestamp')) {
+          // Where we at?
+          document.getElementById('rnf-location').innerText = payload.label;
 
-        // Drop a marker on the map:
-        var markerGeoJSON = [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [response.lon, response.lat]
-            },
-            properties: {
-              "marker-color": "#FF6633",
-              "marker-size": "small",
-              "marker-symbol": "car"
-            }
-          }
-        ];
+          // How long ago?
+          const now = Math.floor(new Date().getTime() / 1000);
+          const diff = (now - payload.timestamp) / 60 / 60;
+          const output = (diff < 1) ? "less than an hour ago" : (Math.floor(diff) + " hours ago")
+          document.getElementById('rnf-timestamp').innerText = output;
 
-        window.tqor.currentLocation.markerLayer = L.mapbox.featureLayer().setGeoJSON(markerGeoJSON).addTo(map);
-      }
-    };
-    currentLocation.send();
+          // Save current location
+          window.tqor.currentLocation = payload;
+
+          window.tqor.rnfCurrentMarker = new mapboxgl.Marker({ color: '#0066FF' })
+            .setLngLat([payload.lon, payload.lat])
+            .addTo(map);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        return false;
+      });
   }
-
-  */
-
 })();

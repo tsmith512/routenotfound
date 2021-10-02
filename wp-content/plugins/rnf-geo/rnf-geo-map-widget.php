@@ -71,9 +71,6 @@ class RNF_Geo_Map_Widget extends WP_Widget {
     ?>
       <div class="rnf-geo-map-widget">
         <div id="map"></div>
-        <div id="mapclose">
-          <span>Close</span>
-        </div>
         <?php if ($show_current_trip_info): ?>
           <div class="trip-info">
             <span class="rnf-geo-widget-icon rnf-geo-widget-icon-marker">Current Location:</span>
@@ -83,6 +80,9 @@ class RNF_Geo_Map_Widget extends WP_Widget {
             <a href="<?php echo get_term_link($current->wp_category); ?>"><?php echo $current->wp_category->name; ?></a>
           </div>
         <?php endif; ?>
+        <div id="mapclose">
+          <span>Close</span>
+        </div>
       </div>
 
     <?php

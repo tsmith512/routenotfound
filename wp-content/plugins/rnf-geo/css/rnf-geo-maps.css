@@ -15,7 +15,7 @@
 
 .rnf-geo-map-widget #mapclose {
   position: absolute;
-  z-index: 100;
+  z-index: 200;
   left: 50%;
   transform: translateX(-50%);
   bottom: 1em;
@@ -46,6 +46,10 @@
   .rnf-geo-map-widget #mapclose {
     display: none !important;
   }
+}
+
+.rnf-geo-map-widget .trip-info + #mapclose {
+  bottom: 6em;
 }
 
 .rnf-geo-map-widget #mapclose:hover {
@@ -126,6 +130,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
+    z-index: 100;
   }
 
   .rnf-geo-map-widget.visible {
