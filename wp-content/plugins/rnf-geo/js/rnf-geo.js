@@ -21,7 +21,8 @@
     const allTrips =
       (window.tqor?.trips_with_content?.length) ? tqor.trips_with_content : [];
 
-    // Did WordPress rnf-geo tell us what to load?
+    // Did WordPress rnf-geo tell us what to load? (If the plugin is enabled,
+    // this will always exist, though it might be empty.)
     if (window.tqor?.start) {
       // Single post or a trip: get the line.
       if (['post', 'trip'].indexOf(window.tqor.start.type) > -1) {
@@ -30,6 +31,10 @@
           var boxes = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
           map.fitBounds(boxes, {animate: true, padding: 10});
         });
+      } else {
+        // It's not a post or category associated to a trip, load everything
+        // I've written about.
+        loadAllTrips(allTrips);
       }
 
       // Single post: add a marker.
@@ -41,12 +46,9 @@
       if (window.tqor.start.current === true) {
         setupCurrentLocation();
       }
-
-      // Neither trip or post: load everything I've written about.
-      if (window.tqor.start.type === false) {
-        loadAllTrips(allTrips);
-      }
     } else {
+      // @TODO: The only way to get here is if rnf-geo didn't execute its init
+      // hook, meaning it's disabled or errored. Should we bail?
       loadAllTrips(allTrips);
     }
 
