@@ -26,11 +26,10 @@ require_once "rnf-geo-settings.php";
  * displays, including passing in the rnf_geo_settings data.
  */
 function rnf_geo_register_assets() {
-  wp_register_script('mapbox-core', content_url('/vendor/mapbox/mapbox.js-bower/mapbox.js'), array(), null, true);
-  wp_register_style('mapbox-style', content_url('/vendor/mapbox/mapbox.js-bower/mapbox.css'), array(), null);
+  wp_register_script('mapbox-core', 'https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js', array(), null, true);
+  wp_register_style('mapbox-style', 'https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css', array(), null);
 
-  wp_register_script('rnf-geo-js', plugin_dir_url( __FILE__ ) . 'js/rnf-geo.js', array('mapbox-core', 'rnf-geo-polyfills'), RNF_VERSION, true);
-  wp_register_script('rnf-geo-polyfills', plugin_dir_url( __FILE__ ) . 'js/polyfills.js', array(), RNF_VERSION, true);
+  wp_register_script('rnf-geo-js', plugin_dir_url( __FILE__ ) . 'js/rnf-geo.js', array('mapbox-core'), RNF_VERSION, true);
   wp_register_style('rnf-geo-style', plugin_dir_url( __FILE__ ) . 'css/rnf-geo-maps.css', array('mapbox-style'), RNF_VERSION);
 
   // Figure out where we are so we can tell the map where to start
