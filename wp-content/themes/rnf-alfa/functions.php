@@ -27,28 +27,28 @@ function rnf_theme_register_scripts_and_styles() {
   // Reregistering it by the same name makes sure that the parent theme's CSS
   // dependencies (mostly for gutenberg blocks) still render.
   wp_deregister_style('twentyseventeen-style');
-  wp_register_style('twentyseventeen-style', get_stylesheet_uri(), array(), RNF_VERSION);
+  wp_register_style('twentyseventeen-style', get_stylesheet_uri(), array(), null);
 
   // Drop the Libre Franklin, I'm gonna use something else.
   wp_deregister_style('twentyseventeen-fonts');
 
-  wp_register_style('rnf-header-images', get_stylesheet_directory_uri() . '/dist/css/header-images.css', array(), RNF_VERSION);
+  wp_register_style('rnf-header-images', get_stylesheet_directory_uri() . '/dist/css/header-images.css', array(), null);
   wp_enqueue_style('rnf-header-images');
 
   wp_register_style('rnf-hco-typefaces', '//cloud.typography.com/6795652/6519212/css/fonts.css', array(), null);
   wp_enqueue_style('rnf-hco-typefaces');
 
   // (Own) General site-wide stuff
-  wp_register_script('rnf-alfa-js-main', get_stylesheet_directory_uri() . '/js/main.js', array(), RNF_VERSION, true);
+  wp_register_script('rnf-alfa-js-main', get_stylesheet_directory_uri() . '/js/main.js', array(), null, true);
   wp_enqueue_script('rnf-alfa-js-main');
-  wp_register_script('rnf-alfa-js-header-images', get_stylesheet_directory_uri() . '/dist/js/header-images.js', array(), RNF_VERSION, true);
+  wp_register_script('rnf-alfa-js-header-images', get_stylesheet_directory_uri() . '/dist/js/header-images.js', array(), null, true);
   wp_enqueue_script('rnf-alfa-js-header-images');
 
   // (Own) Media handlers
-  wp_register_script('rnf-alfa-js-media', get_stylesheet_directory_uri() . '/js/media.js', array('fancybox-script', 'jquery'), RNF_VERSION, true);
+  wp_register_script('rnf-alfa-js-media', get_stylesheet_directory_uri() . '/js/media.js', array('fancybox-script', 'jquery'), null, true);
 
   // LoadCSS polyfill
-  wp_register_script('rnf-loadcss', content_url() . '/vendor/filamentgroup/loadCSS/src/cssrelpreload.js', array(), RNF_VERSION, true);
+  wp_register_script('rnf-loadcss', content_url() . '/vendor/filamentgroup/loadCSS/src/cssrelpreload.js', array(), null, true);
 
   // Was loading this conditionally on `post_gallery` filter, but I haven't
   // figured out how to attach it to Gutenberg blocks yet, and let's face it,
@@ -74,7 +74,7 @@ add_action( 'wp_enqueue_scripts', 'rnf_theme_register_scripts_and_styles', 20 );
  */
 function rnf_theme_css_preload($html, $handle, $href, $media) {
   // Only working on the HCO typefaces
-  if (in_array($handle, array('rnf-hco-typefaces', 'rnf-header-images', 'fancybox-style', 'mapbox-style'))) {
+  if (in_array($handle, array('rnf-hco-typefaces', 'rnf-header-images', 'fancybox-style', 'mapbox-style', 'wp-block-library', 'rnf-maps-geo', 'cloudflare-stream-block-style-css', 'twentyseventeen-block-style-css'))) {
     // We're going to use rel=preload, so pull in the polyfill
     wp_enqueue_script('rnf-loadcss');
 

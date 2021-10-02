@@ -25,8 +25,8 @@ function rnf_geo_admin_page() {
             <td><?php print $trip->id; ?></td>
             <td><?php print $trip->slug; ?></td>
             <td><?php print $trip->label; ?></td>
-            <td><?php print $trip->start; ?></td>
-            <td><?php print $trip->end; ?></td>
+            <td><?php print date('r', $trip->start); ?></td>
+            <td><?php print date('r', $trip->end); ?></td>
             <td>
               <?php
                 if ($trip->wp_category !== false) {

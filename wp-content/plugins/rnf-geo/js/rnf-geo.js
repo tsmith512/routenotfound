@@ -1,276 +1,241 @@
 (function(){
   'use strict';
 
-  L.mapbox.accessToken = tqor.mapboxApi;
-  window.map = L.mapbox.map('map').fitBounds([[50.79204, -97.20703],[15.02968, -125.77148]], {animate: true, padding: [10, 10]});
-  L.mapbox.styleLayer(tqor.mapboxStyle).addTo(map);
+  /**
+   * Initialize the Mapbox GL JS library and map container
+   */
+  mapboxgl.accessToken = tqor.mapboxApi;
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-109.77, 42.99],
+    zoom: 2,
+  });
 
-  // @TODO: NOTE! THIS CALLBACK IS EXECUTED FOR EACH LOAD at the moment. It's
-  // original usecase was just to check dates anyway, but we need a way to call
-  // loadAllTrips's callback _after_ all of forEach(laodTrip()) is done.
-  var loadAllTrips = function(tripsToLoad, callback) {
-    tripsToLoad = (Array.isArray(tqor.trips_with_content) && tripsToLoad.length) ? tripsToLoad : false;
-    callback = callback || false;
+  map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
 
-    // If we don't have a list of trips to load provided by WordPress, request them all.
-    if (!tripsToLoad) {
-      // Request from the location server API all of the Trips in the database.
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', tqor.locationApi + '/trips');
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          var response = JSON.parse(xhr.responseText);
-          // For every trip identified in the database, fetch its information and
-          // add the LineString to the map.
-          response.forEach(function (trip) {
-            loadTrip(trip.id, callback);
-          });
-        }
-      };
-      xhr.send();
+  /**
+   * When the Map object is initialized, populate it based on current page
+   */
+  map.on('load', () => {
+    const allTrips =
+      (window.tqor?.trips_with_content?.length) ? tqor.trips_with_content : [];
+
+    // Did WordPress rnf-geo tell us what to load? (If the plugin is enabled,
+    // this will always exist, though it might be empty.)
+    if (window.tqor?.start) {
+      // Single post or a trip: get the line.
+      if (['post', 'trip'].indexOf(window.tqor.start.type) > -1) {
+        loadTrip(window.tqor.start.trip_id, (trip) => {
+          const bounds = trip.boundaries.match(/-?\d+\.\d+/g);
+          var boxes = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
+          map.fitBounds(boxes, {animate: true, padding: 10});
+        });
+      } else {
+        // It's not a post or category associated to a trip, load everything
+        // I've written about.
+        loadAllTrips(allTrips);
+      }
+
+      // Single post: add a marker.
+      if (window.tqor.start.type === 'post') {
+        addMarkerForTimestamp(window.tqor.start.timestamp);
+      }
+
+      // There's an active trip and we're looking at it or a general index
+      if (window.tqor.start.current === true) {
+        setupCurrentLocation();
+      }
     } else {
-      tripsToLoad.forEach(function (trip) {
-        loadTrip(trip, callback);
-      });
+      // @TODO: The only way to get here is if rnf-geo didn't execute its init
+      // hook, meaning it's disabled or errored. Should we bail?
+      loadAllTrips(allTrips);
     }
-  }
 
-  var loadTrip = function(trip_id, callback) {
+    setupMapJumpLinks();
+    setupMapCloseButton();
+  });
+
+  /**
+   * Given an array of trip IDs, load and display GeoJSON lines for each.
+   */
+  const loadAllTrips = (tripsToLoad, callback) => {
     callback = callback || false;
 
-    var tripXhr = new XMLHttpRequest();
-    tripXhr.open('GET', tqor.locationApi + '/trip/' + trip_id);
-    tripXhr.setRequestHeader('Content-Type', 'application/json');
-    tripXhr.onload = function () {
-      if (tripXhr.status === 200) {
-        var tripResponse = JSON.parse(tripXhr.responseText);
-        window.tqor.trips[trip_id] = tripResponse;
-        if (tripResponse.hasOwnProperty('line') && tripResponse.line.coordinates) {
-          window.tqor.trips[trip_id].line = L.mapbox.featureLayer(tripResponse.line).addTo(map);
-
-          if (callback) {
-            callback(tripResponse);
-          }
-        }
-      }
-    };
-    tripXhr.send();
-  }
-
-  var mapToTimestamp = function(timestamp) {
-    if (!window.tqor.cache.hasOwnProperty(timestamp)) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', tqor.locationApi + '/waypoint/' + timestamp);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          var response = JSON.parse(xhr.responseText);
-          if (response.hasOwnProperty('lat')) {
-            map.setView([response.lat, response.lon], 8);
-            window.tqor.cache[timestamp] = [response.lat, response.lon];
-          }
-        }
-      };
-      xhr.send();
-    }
-    else {
-      map.setView(window.tqor.cache[timestamp], 8);
-    }
-    map.invalidateSize();
-  }
-
-  var addMarkerToTimestamp = function(timestamp) {
-    if (!window.tqor.cache.hasOwnProperty(timestamp)) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', tqor.locationApi + '/waypoint/' + timestamp);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          var response = JSON.parse(xhr.responseText);
-          if (response.hasOwnProperty('lat')) {
-            window.tqor.cache[timestamp] = [response.lat, response.lon];
-            // Drop a marker on the map:
-            var markerGeoJSON = [
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [response.lon, response.lat]
-                },
-                properties: {
-                  "marker-color": "#FF6633",
-                  "marker-size": "small",
-                  "marker-symbol": "post"
-                }
-              }
-            ];
-            if (window.tqor.hasOwnProperty('postMarker')) {
-              window.tqor.postMarker.removeFrom(map);
-            }
-            window.tqor.postMarker = L.mapbox.featureLayer().setGeoJSON(markerGeoJSON).addTo(map);
-          }
-        }
-      };
-      xhr.send();
-    }
-    else {
-      // Drop a marker on the map:
-      var markerGeoJSON = [
-        {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: window.tqor.cache[timestamp]
-          },
-          properties: {
-            "marker-color": "#FF6633",
-            "marker-size": "small",
-            "marker-symbol": "post"
-          }
-        }
-      ];
-      if (window.tqor.hasOwnProperty('postMarker')) {
-        window.tqor.postMarker.removeFrom(map);
-      }
-      window.tqor.postMarker = L.mapbox.featureLayer().setGeoJSON(markerGeoJSON).addTo(map);
-    }
-  }
-
-  var rnfCustomMapControl = L.Control.extend({
-    options: {
-      position: 'topright',
-    },
-    onAdd: function (map) {
-      var container = L.DomUtil.create('div', 'leaflet-bar rnfmap-custom-controls');
-      L.DomEvent.disableClickPropagation(container);
-
-      var closeMapLink = L.DomUtil.create('a', 'icon-close rnfmap-close', container);
-      closeMapLink.href = '#';
-      closeMapLink.text = 'Close';
-      L.DomEvent.addListener(closeMapLink, 'click', this._closeMapClick, this);
-
-      return container;
-    },
-
-    _closeMapClick: function (e) {
-      L.DomEvent.stop(e);
-      map._container.parentElement.classList.toggle('visible');
-    }
-  });
-  map.addControl(new rnfCustomMapControl());
-
-  var mapJumpLinks = document.querySelectorAll('article a.tqor-map-jump');
-  mapJumpLinks.forEach(function (el) {
-    el.addEventListener('click', function (e) {
-      e.preventDefault();
-      var timestamp = el.getAttribute('data-timestamp');
-      mapToTimestamp(timestamp);
-      addMarkerToTimestamp(timestamp);
-
-      // And add the visible class to the container so it opens on mobile.
-      map._container.parentElement.classList.toggle('visible');
-      map.invalidateSize();
+    tripsToLoad.forEach(tripId => {
+      loadTrip(tripId, callback);
     });
-  });
+  };
 
-  // Decide what to show on the map given what kind of page we're on
-  // @TODO: A trip category page is going to need the trip data from above,
-  // may need to wrap this in a promise.
-  var tripsToLoad = false;
+  /**
+   * Given a trip ID, load and display its GeoJSON line.
+   */
+  const loadTrip = (tripId, callback) => {
+    callback = callback || false;
 
-  if (tqor.hasOwnProperty('trips_with_content') && tqor.trips_with_content.length) {
-    tripsToLoad = tqor.trips_with_content;
-  }
-
-  if (tqor.hasOwnProperty('start')) {
-    switch (window.tqor.start.type) {
-      case 'trip':
-        loadTrip(window.tqor.start.trip_id, function(trip) {
-          if (trip.hasOwnProperty('boundaries')) {
-            var bounds = trip.boundaries.match(/-?\d+\.\d+/g);
-            var boxes = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]];
-            window.map.fitBounds(boxes, {animate: true, padding: [10, 10]});
-          }
-        });
-        break;
-      case 'post':
-        if (window.tqor.start.hasOwnProperty('trip_id')) {
-          loadTrip(window.tqor.start.trip_id, function(trip) {
-            // If this trip has a line, zoom the map in
-            if (trip.hasOwnProperty('boundaries')) {
-              var bounds = trip.boundaries.match(/-?\d+\.\d+/g);
-              var boxes = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]];
-              window.map.fitBounds(boxes, {animate: true, padding: [10, 10]});
-            }
-
-            // If the post was written during this trip, add a marker
-            if (trip.start <= window.tqor.start.timestamp && window.tqor.start.timestamp <= trip.end) {
-              addMarkerToTimestamp(window.tqor.start.timestamp);
-            }
-          });
+    fetch(`${tqor.locationApi}/trip/${tripId}`)
+      .then(res => {
+        if (res.ok) {
+          return res.json();
         } else {
-          loadAllTrips(tripsToLoad);
+          throw new Error(JSON.stringify(res));
         }
-        break;
-      default:
-        var currentTimestamp = Date.now() / 1000;
-        loadAllTrips(tripsToLoad, function(tripResponse){
-          if (tripResponse.start <= currentTimestamp && currentTimestamp <= tripResponse.end) {
-            // This trip is happening now, zoom to it.
-            if (tripResponse.hasOwnProperty('boundaries')) {
-              window.map.fitBounds(tripResponse.boundaries, {animate: true, padding: [10, 10]});
-            }
-          }
-        });
-        // @TODO: Where should we center the map in this case?
-    }
-  }
+      })
+      .then(tripData => {
+        // @TODO: This may not be needed anymore.
+        window.tqor.trips[tripId] = tripData;
 
-  // @TODO: There's probably a better way to handle this logic, but WordPress
-  // will only output this information panel if we're on a trip that has an
-  // associated category. So this check is asking "are we on a trip with content?"
-  if (document.querySelectorAll('.rnf-geo-map-widget .trip-info').length) {
-    var currentLocation = new XMLHttpRequest();
-    currentLocation.open('GET', tqor.locationApi + '/waypoint');
-    currentLocation.setRequestHeader('Content-Type', 'application/json');
-    currentLocation.onload = function () {
-      if (currentLocation.status === 200) {
-        var response = JSON.parse(currentLocation.responseText);
-        if (response.hasOwnProperty('time')) {
-          // Set the current city in the widget:
-          document.getElementById('rnf-location').innerText = response.label;
+        // If the trip has a started line, add it to the map.
+        if (tripData.line?.coordinates?.length) {
+          map.addSource(`trip-${tripId}-source`, {
+            type: 'geojson',
+            data: tripData.line,
+          });
 
-          // Set the current time in the widget:
-          var now = Math.floor(new Date().getTime() / 1000);
-          var then = response.timestamp;
-          var diff = (now - then) / 60 / 60;
-          var output = (diff < 1) ? "less than an hour ago" : (Math.floor(diff) + " hours ago")
-          document.getElementById('rnf-timestamp').innerText = output;
-          window.tqor.currentLocation = response;
-        }
-
-        // Drop a marker on the map:
-        var markerGeoJSON = [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [response.lon, response.lat]
+          map.addLayer({
+            id: `trip-${tripId}-layer`,
+            type: 'line',
+            source: `trip-${tripId}-source`,
+            paint: {
+              'line-color': '#FF3300',
+              'line-width': 2,
             },
-            properties: {
-              "marker-color": "#FF6633",
-              "marker-size": "small",
-              "marker-symbol": "car"
-            }
-          }
-        ];
+          });
+        }
 
-        window.tqor.currentLocation.markerLayer = L.mapbox.featureLayer().setGeoJSON(markerGeoJSON).addTo(map);
-      }
-    };
-    currentLocation.send();
+        // Fire a callback if necessary: used to reset map bounds after a line
+        // is loaded. @TODO: could async/promise that...
+        if (callback) {
+          callback(tripData);
+        }
+      })
+      .catch(error => { console.log(error) });
   }
 
+  /**
+   * Given a unix timestamp, get the closest coordinates from the API.
+   */
+  const getGeoForTimestamp = async (timestamp) => {
+    let waypoint = [];
 
+    if (!window.tqor.cache.hasOwnProperty(timestamp)) {
+      waypoint = await fetch(`${tqor.locationApi}/waypoint/${timestamp}`)
+        .then(res => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            throw new Error(JSON.stringify(res));
+          }
+        })
+        .then(payload => {
+          waypoint = [payload.lon, payload.lat];
+          window.tqor.cache[timestamp] = waypoint;
+          return waypoint;
+        })
+        .catch(error => {
+          console.log(error);
+          return false;
+        });
+    } else {
+      waypoint = window.tqor.cache[timestamp];
+    }
+
+    return waypoint;
+  }
+
+  /**
+   * Given a unix timestamp, put a marker on the map for where we were.
+   */
+  const addMarkerForTimestamp = async (timestamp) => {
+    const waypoint = await getGeoForTimestamp(timestamp);
+
+    if (window.tqor.rnfPostMarker) {
+      window.tqor.rnfPostMarker.remove();
+      delete window.tqor.rnfPostMarker;
+    }
+
+    // Currently only showing one of these at a time, but it'd be cool to do
+    // something more interactive.
+    window.tqor.rnfPostMarker = new mapboxgl.Marker({ color: '#FF3300' })
+      .setLngLat(waypoint)
+      .addTo(map);
+  }
+
+  /**
+   * Given a unix timestamp, move and zoom the map to where we were.
+   */
+  const moveMapToTimestamp = async (timestamp) => {
+    const waypoint = await getGeoForTimestamp(timestamp);
+    map.easeTo({
+      center: waypoint,
+      zoom: 7,
+    });
+  }
+
+  /**
+   * Snag each of the "location links" in article headers. When clicked, add a
+   * marker and move the map. Reveal the map if currently hidden on mobile.
+   */
+  const setupMapJumpLinks = () => {
+    document.querySelectorAll('article a.tqor-map-jump').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const timestamp = link.getAttribute('data-timestamp');
+        addMarkerForTimestamp(timestamp);
+        moveMapToTimestamp(timestamp);
+
+        map.getContainer().parentElement.classList.add('visible');
+        map.resize();
+      });
+    });
+  };
+
+  /**
+   * Wire up my hacky little "close map" button.
+   */
+  const setupMapCloseButton = () => {
+    document.getElementById('mapclose').addEventListener('click', (e) => {
+      e.preventDefault();
+      map.getContainer().parentElement.classList.remove('visible');
+    });
+  };
+
+  /**
+   * We have information about a current trip, so there's a little info box in
+   * the map display.
+   */
+  const setupCurrentLocation = () => {
+    fetch(`${tqor.locationApi}/waypoint`)
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error(JSON.stringify(res));
+        }
+      })
+      .then(payload => {
+        if (payload.hasOwnProperty('timestamp')) {
+          // Where we at?
+          document.getElementById('rnf-location').innerText = payload.label;
+
+          // How long ago?
+          const now = Math.floor(new Date().getTime() / 1000);
+          const diff = (now - payload.timestamp) / 60 / 60;
+          const output = (diff < 1) ? "less than an hour ago" : (Math.floor(diff) + " hours ago")
+          document.getElementById('rnf-timestamp').innerText = output;
+
+          // Save current location
+          window.tqor.currentLocation = payload;
+
+          window.tqor.rnfCurrentMarker = new mapboxgl.Marker({ color: '#0066FF' })
+            .setLngLat([payload.lon, payload.lat])
+            .addTo(map);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        return false;
+      });
+  }
 })();

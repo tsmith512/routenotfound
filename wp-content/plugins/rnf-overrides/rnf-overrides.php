@@ -73,6 +73,22 @@ function rnf_overrides_oembed_handler($matches, $attr, $url, $rawattr) {
   // We'll store these fully rendered in the transient cache:
   $cache_name = "rnf_og_embed_" . md5($url);
 
+  if (strpos($url, 'kinja') !== false) {
+    $render = array();
+    $render[] = "<div class='rnf-card'>";
+    $render[] = "<p class='rnf-card-text'>";
+    $render[] = "<span class='rnf-card-link'>{$url}</span>";
+    $render[] = "<em>Kinja has deleted its OppositeLock and Overland communities.</em>";
+    $render[] = "<span class='rnf-card-citation'>";
+    $render[] = "Content Unavailable";
+    $render[] = "</span>";
+    $render[] = "</p>";
+    $render[] = "</div>";
+    $output = implode(' ', $render);
+    return apply_filters('embed_rnf_failed', $output, $matches, $attr, $url, $rawattr);
+  }
+
+
   // Attempt to fetch the transient cache version and use it if we get one:
   if (false !== ($value = get_transient($cache_name)) ) {
     // We got a response from the cache and it is current:
@@ -106,7 +122,7 @@ function rnf_overrides_oembed_handler($matches, $attr, $url, $rawattr) {
     $render[] = "<a href='{$url}' class='rnf-card-link'>{$url}</a>";
 
     $render[] = "<span class='rnf-card-citation'>";
-    $render[] = "Content Unavailable";
+    $render[] = "Could not Embed";
     $render[] = "</span>";
     $render[] = "</p>";
 

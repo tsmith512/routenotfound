@@ -26,11 +26,10 @@ require_once "rnf-geo-settings.php";
  * displays, including passing in the rnf_geo_settings data.
  */
 function rnf_geo_register_assets() {
-  wp_register_script('mapbox-core', content_url('/vendor/mapbox/mapbox.js-bower/mapbox.js'), array(), null, true);
-  wp_register_style('mapbox-style', content_url('/vendor/mapbox/mapbox.js-bower/mapbox.css'), array(), null);
+  wp_register_script('mapbox-core', content_url('/vendor/mapbox/mapbox-gl.js'), array(), null, true);
+  wp_register_style('mapbox-style', content_url('/vendor/mapbox/mapbox-gl.css'), array(), null);
 
-  wp_register_script('rnf-geo-js', plugin_dir_url( __FILE__ ) . 'js/rnf-geo.js', array('mapbox-core', 'rnf-geo-polyfills'), RNF_VERSION, true);
-  wp_register_script('rnf-geo-polyfills', plugin_dir_url( __FILE__ ) . 'js/polyfills.js', array(), RNF_VERSION, true);
+  wp_register_script('rnf-geo-js', plugin_dir_url( __FILE__ ) . 'js/rnf-geo.js', array('mapbox-core'), RNF_VERSION, true);
   wp_register_style('rnf-geo-style', plugin_dir_url( __FILE__ ) . 'css/rnf-geo-maps.css', array('mapbox-style'), RNF_VERSION);
 
   // Figure out where we are so we can tell the map where to start
@@ -50,6 +49,7 @@ function rnf_geo_register_assets() {
       $trip_id = get_term_meta($trip_term_id[0], 'rnf_geo_trip_id', true);
       if (is_numeric($trip_id) && (int) $trip_id > 0) {
         $start['trip_id'] = $trip_id;
+        $start['current'] = ($trip_id == $current->id);
       }
     }
 
@@ -61,6 +61,7 @@ function rnf_geo_register_assets() {
       $start = array(
         'type' => 'trip',
         'trip_id' => $trip_id,
+        'current' => ($trip_id == $current->id),
       );
     }
   } else if (!empty($current->wp_category)) {
@@ -68,6 +69,7 @@ function rnf_geo_register_assets() {
     // a corresponding category, so show that.
     $start = array(
       'type' => 'trip',
+      'current' => true,
       'trip_id' => $current->id, // Note: this is the trip ID, not the term ID
     );
 

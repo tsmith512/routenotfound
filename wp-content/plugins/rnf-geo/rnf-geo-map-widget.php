@@ -80,6 +80,9 @@ class RNF_Geo_Map_Widget extends WP_Widget {
             <a href="<?php echo get_term_link($current->wp_category); ?>"><?php echo $current->wp_category->name; ?></a>
           </div>
         <?php endif; ?>
+        <div id="mapclose">
+          <span>Close</span>
+        </div>
       </div>
 
     <?php
