@@ -6,7 +6,7 @@
   /**
    * Initialize the Mapbox GL JS library and map container
    */
-  mapboxgl.accessToken = tqor.mapboxApi;
+  mapboxgl.accessToken = rnf.mapboxApi;
   const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v11',
@@ -21,14 +21,14 @@
    */
   map.on('load', () => {
     const allTrips =
-      (window.tqor?.trips_with_content?.length) ? tqor.trips_with_content : [];
+      (window.rnf?.trips_with_content?.length) ? rnf.trips_with_content : [];
 
     // Did WordPress rnf-geo tell us what to load? (If the plugin is enabled,
     // this will always exist, though it might be empty.)
-    if (window.tqor?.start) {
+    if (window.rnf?.start) {
       // Single post or a trip: get the line.
-      if (['post', 'trip'].indexOf(window.tqor.start.type) > -1) {
-        loadTrip(window.tqor.start.trip_id, (trip) => {
+      if (['post', 'trip'].indexOf(window.rnf.start.type) > -1) {
+        loadTrip(window.rnf.start.trip_id, (trip) => {
           const bounds = trip.boundaries.match(/-?\d+\.\d+/g);
           var boxes = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
           map.fitBounds(boxes, {animate: true, padding: 10});
@@ -41,17 +41,17 @@
       }
 
       // Single post: add a marker.
-      if (window.tqor.start.type === 'post') {
-        addMarkerForTimestamp(window.tqor.start.timestamp);
+      if (window.rnf.start.type === 'post') {
+        addMarkerForTimestamp(window.rnf.start.timestamp);
       }
 
       // Archive view: add the scroll handler
-      if (window.tqor.start.type === 'trip') {
+      if (window.rnf.start.type === 'trip') {
         window.addEventListener('scroll', setupMapAutoPanToPost);
       }
 
       // There's an active trip and we're looking at it or a general index
-      if (window.tqor.start.current === true) {
+      if (window.rnf.start.current === true) {
         setupCurrentLocation();
       }
     } else {
@@ -82,7 +82,7 @@
   const loadTrip = (tripId, callback) => {
     callback = callback || false;
 
-    fetch(`${tqor.locationApi}/trip/${tripId}`)
+    fetch(`${rnf.locationApi}/trip/${tripId}`)
       .then(res => {
         if (res.ok) {
           return res.json();
@@ -92,7 +92,7 @@
       })
       .then(tripData => {
         // @TODO: This may not be needed anymore.
-        window.tqor.trips[tripId] = tripData;
+        window.rnf.trips[tripId] = tripData;
 
         // If the trip has a started line, add it to the map.
         if (tripData.line?.coordinates?.length) {
@@ -127,8 +127,8 @@
   const getGeoForTimestamp = async (timestamp) => {
     let waypoint = [];
 
-    if (!window.tqor.cache.hasOwnProperty(timestamp)) {
-      waypoint = await fetch(`${tqor.locationApi}/waypoint/${timestamp}`)
+    if (!window.rnf.cache.hasOwnProperty(timestamp)) {
+      waypoint = await fetch(`${rnf.locationApi}/waypoint/${timestamp}`)
         .then(res => {
           if (res.ok) {
             return res.json();
@@ -138,7 +138,7 @@
         })
         .then(payload => {
           waypoint = [payload.lon, payload.lat];
-          window.tqor.cache[timestamp] = waypoint;
+          window.rnf.cache[timestamp] = waypoint;
           return waypoint;
         })
         .catch(error => {
@@ -146,7 +146,7 @@
           return false;
         });
     } else {
-      waypoint = window.tqor.cache[timestamp];
+      waypoint = window.rnf.cache[timestamp];
     }
 
     return waypoint;
@@ -158,14 +158,14 @@
   const addMarkerForTimestamp = async (timestamp) => {
     const waypoint = await getGeoForTimestamp(timestamp);
 
-    if (window.tqor.rnfPostMarker) {
-      window.tqor.rnfPostMarker.remove();
-      delete window.tqor.rnfPostMarker;
+    if (window.rnf.rnfPostMarker) {
+      window.rnf.rnfPostMarker.remove();
+      delete window.rnf.rnfPostMarker;
     }
 
     // Currently only showing one of these at a time, but it'd be cool to do
     // something more interactive.
-    window.tqor.rnfPostMarker = new mapboxgl.Marker({ color: '#FF3300' })
+    window.rnf.rnfPostMarker = new mapboxgl.Marker({ color: '#FF3300' })
       .setLngLat(waypoint)
       .addTo(map);
   }
@@ -186,7 +186,7 @@
    * marker and move the map. Reveal the map if currently hidden on mobile.
    */
   const setupMapJumpLinks = () => {
-    document.querySelectorAll('article a.tqor-map-jump').forEach((link) => {
+    document.querySelectorAll('article a.rnf-map-jump').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
 
@@ -211,7 +211,7 @@
       if (isPostInScrollView(postEl) && !postEl.classList.contains('rnf-in-view')) {
         postEl.classList.add('rnf-in-view');
 
-        const mapLink = postEl.querySelector('.tqor-map-jump');
+        const mapLink = postEl.querySelector('.rnf-map-jump');
 
         if (mapLink && autoScrollMapPoint) {
           addMarkerForTimestamp(mapLink.getAttribute('data-timestamp'));
@@ -248,7 +248,7 @@
    * the map display.
    */
   const setupCurrentLocation = () => {
-    fetch(`${tqor.locationApi}/waypoint`)
+    fetch(`${rnf.locationApi}/waypoint`)
       .then(res => {
         if (res.ok) {
           return res.json();
@@ -268,9 +268,9 @@
           document.getElementById('rnf-timestamp').innerText = output;
 
           // Save current location
-          window.tqor.currentLocation = payload;
+          window.rnf.currentLocation = payload;
 
-          window.tqor.rnfCurrentMarker = new mapboxgl.Marker({ color: '#0066FF' })
+          window.rnf.rnfCurrentMarker = new mapboxgl.Marker({ color: '#0066FF' })
             .setLngLat([payload.lon, payload.lat])
             .addTo(map);
         }

@@ -188,7 +188,7 @@ function twentyseventeen_time_link() {
 
     $map_link_text = (!empty($post->rnf_geo_city)) ? $post->rnf_geo_city : "Map";
 
-    $time_header .= " / <a href='#' class='tqor-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
+    $time_header .= " / <a href='#' class='rnf-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
   }
 
   return $time_header;

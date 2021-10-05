@@ -86,7 +86,7 @@ function rnf_geo_register_assets() {
   }
 
   $options = get_option( 'rnf_geo_settings' );
-  $tqor = array(
+  $rnf = array(
     'mapboxApi' => !empty($options['mapbox_api_token']) ? $options['mapbox_api_token'] : null,
     'mapboxStyle' => !empty($options['mapbox_style']) ? $options['mapbox_style'] : null,
     'locationApi' => !empty($options['location_tracker_endpoint']) ? $options['location_tracker_endpoint'] : null,
@@ -96,7 +96,7 @@ function rnf_geo_register_assets() {
     'start' => $start
   );
 
-  wp_localize_script('rnf-geo-js', 'tqor', $tqor);
+  wp_localize_script('rnf-geo-js', 'rnf', $rnf);
 }
 add_action('wp_enqueue_scripts', 'rnf_geo_register_assets', 5);
 add_action('admin_enqueue_scripts', 'rnf_geo_register_assets');
@@ -185,7 +185,7 @@ function rnf_geo_ajax_create_trip_category() {
   print json_encode($term);
   wp_die();
 }
-add_action( 'wp_ajax_tqor_create_term', 'rnf_geo_ajax_create_trip_category' );
+add_action( 'wp_ajax_rnf_create_term', 'rnf_geo_ajax_create_trip_category' );
 
 /**
  * Dump the trip cache.
@@ -193,7 +193,7 @@ add_action( 'wp_ajax_tqor_create_term', 'rnf_geo_ajax_create_trip_category' );
 function rnf_geo_ajax_clear_trip_cache() {
   delete_transient('rnf_geo_trips_cache');
 }
-add_action( 'wp_ajax_tqor_clear_trip_cache', 'rnf_geo_ajax_clear_trip_cache' );
+add_action( 'wp_ajax_rnf_clear_trip_cache', 'rnf_geo_ajax_clear_trip_cache' );
 
 /**
  * Display a Location Tracker Trip ID on the taxonomy term management page if
