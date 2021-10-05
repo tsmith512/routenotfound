@@ -35,11 +35,17 @@
         // It's not a post or category associated to a trip, load everything
         // I've written about.
         loadAllTrips(allTrips);
+        window.addEventListener('scroll', setupMapAutoPanToPost);
       }
 
       // Single post: add a marker.
       if (window.tqor.start.type === 'post') {
         addMarkerForTimestamp(window.tqor.start.timestamp);
+      }
+
+      // Archive view: add the scroll handler
+      if (window.tqor.start.type === 'trip') {
+        window.addEventListener('scroll', setupMapAutoPanToPost);
       }
 
       // There's an active trip and we're looking at it or a general index
@@ -49,6 +55,7 @@
     } else {
       // @TODO: The only way to get here is if rnf-geo didn't execute its init
       // hook, meaning it's disabled or errored. Should we bail?
+      console.log('general case');
       loadAllTrips(allTrips);
     }
 
@@ -190,6 +197,36 @@
       });
     });
   };
+
+  /**
+   * Set up a scroll tracker on article containers to check the map as we go.
+   */
+  const setupMapAutoPanToPost = () => {
+    document.querySelectorAll('main > article.post').forEach((postEl) => {
+      if (isPostInScrollView(postEl) && !postEl.classList.contains('POST-IN-VIEW')) {
+        postEl.classList.add('POST-IN-VIEW');
+
+        const mapLink = postEl.querySelector('.tqor-map-jump');
+
+        if (mapLink) {
+          addMarkerForTimestamp(mapLink.getAttribute('data-timestamp'));
+        }
+      }
+
+      if (postEl.classList.contains('POST-IN-VIEW') && !isPostInScrollView(postEl)) {
+        postEl.classList.remove('POST-IN-VIEW');
+      }
+    });
+  }
+
+  const isPostInScrollView = (el) => {
+    const rectangle = el.getBoundingClientRect();
+    // window.innerHeight;
+    // window.scrollY;
+
+    //      Are we past the start?             and  not yet past the end?
+    return (rectangle.top < window.innerHeight) && (rectangle.bottom > 0)
+  }
 
   /**
    * Wire up my hacky little "close map" button.
