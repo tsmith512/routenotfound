@@ -61,7 +61,7 @@ function rnf_geo_register_assets() {
       $start = array(
         'type' => 'trip',
         'trip_id' => $trip_id,
-        'current' => ($trip_id == $current->id),
+        'current' => (isset($current->id) && $trip_id == $current->id),
       );
     }
   } else if (!empty($current->wp_category)) {
