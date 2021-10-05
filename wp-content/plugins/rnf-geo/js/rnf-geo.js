@@ -1,6 +1,8 @@
 (function(){
   'use strict';
 
+  let autoScrollMapPoint = true;
+
   /**
    * Initialize the Mapbox GL JS library and map container
    */
@@ -188,6 +190,9 @@
       link.addEventListener('click', (e) => {
         e.preventDefault();
 
+        // If user clicks a map link, stop doing it automatically.
+        autoScrollMapPoint = false;
+
         const timestamp = link.getAttribute('data-timestamp');
         addMarkerForTimestamp(timestamp);
         moveMapToTimestamp(timestamp);
@@ -203,18 +208,18 @@
    */
   const setupMapAutoPanToPost = () => {
     document.querySelectorAll('main > article.post').forEach((postEl) => {
-      if (isPostInScrollView(postEl) && !postEl.classList.contains('POST-IN-VIEW')) {
-        postEl.classList.add('POST-IN-VIEW');
+      if (isPostInScrollView(postEl) && !postEl.classList.contains('rnf-in-view')) {
+        postEl.classList.add('rnf-in-view');
 
         const mapLink = postEl.querySelector('.tqor-map-jump');
 
-        if (mapLink) {
+        if (mapLink && autoScrollMapPoint) {
           addMarkerForTimestamp(mapLink.getAttribute('data-timestamp'));
         }
       }
 
-      if (postEl.classList.contains('POST-IN-VIEW') && !isPostInScrollView(postEl)) {
-        postEl.classList.remove('POST-IN-VIEW');
+      if (postEl.classList.contains('rnf-in-view') && !isPostInScrollView(postEl)) {
+        postEl.classList.remove('rnf-in-view');
       }
     });
   }
