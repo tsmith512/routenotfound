@@ -49,7 +49,7 @@ function rnf_geo_register_assets() {
       $trip_id = get_term_meta($trip_term_id[0], 'rnf_geo_trip_id', true);
       if (is_numeric($trip_id) && (int) $trip_id > 0) {
         $start['trip_id'] = $trip_id;
-        $start['current'] = ($trip_id == $current->id);
+        $start['current'] = (isset($current->id) && $trip_id == $current->id);
       }
     }
 
