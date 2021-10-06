@@ -1748,7 +1748,7 @@ body:not(.twentyseventeen-front-page) .entry-header {
 --------------------------------------------------------------*/
 
 #secondary {
-  padding: 1em 0 2em;
+  padding: 0 0 2em;
 }
 
 .widget {
@@ -3010,10 +3010,6 @@ p > object:only-child {
   }
 
   /* Posts */
-
-  .site-content {
-    padding: 5.5em 0 0;
-  }
 
   .single-post .entry-title {
     font-size: 26px;

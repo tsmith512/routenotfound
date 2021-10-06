@@ -7,7 +7,7 @@ function rnf_geo_admin_page() {
   <div class="wrap">
     <h1>Trips in Location Tracker <a id="rnf-cache-clear" class="page-title-action">Clear Trips Cache</a></h1>
     <?php /* @TODO: Let's do this the right way... */ ?>
-    <table id="tqor-trips-list" class="wp-list-table widefat fixed striped posts">
+    <table id="rnf-trips-list" class="wp-list-table widefat fixed striped posts">
       <thead>
         <tr>
           <th>Trip ID</th>
@@ -47,9 +47,9 @@ function rnf_geo_admin_page() {
   <?php /* @TODO: This definitely doesn't go here. */ ?>
   <script>
     jQuery(document).ready(function($) {
-      $('#tqor-trips-list button').on('click', function(){
+      $('#rnf-trips-list button').on('click', function(){
         var data = {
-          'action': 'tqor_create_term',
+          'action': 'rnf_create_term',
           'trip_id': $(this).attr('data-trip-id')
         };
         jQuery.post(ajaxurl, data, function(response) {
@@ -59,7 +59,7 @@ function rnf_geo_admin_page() {
       });
       $('#rnf-cache-clear').on('click', function(){
         var data = {
-          'action': 'tqor_clear_trip_cache'
+          'action': 'rnf_clear_trip_cache'
         };
         jQuery.post(ajaxurl, data, function(response) {
           // @TODO: This could be something that isn't a page refresh...
