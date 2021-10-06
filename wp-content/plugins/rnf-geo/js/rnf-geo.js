@@ -9,7 +9,7 @@
   mapboxgl.accessToken = rnf.mapboxApi;
   const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11',
+    style: rnf.mapboxStyle,
     center: [-109.77, 42.99],
     zoom: 2,
   });
