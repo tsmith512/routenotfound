@@ -27,7 +27,7 @@
     // this will always exist, though it might be empty.)
     if (window.rnf?.start) {
       // Single post or a trip: get the line.
-      if (['post', 'trip'].indexOf(window.rnf.start.type) > -1) {
+      if (['post', 'trip'].indexOf(window.rnf.start.type) > -1 && window.rnf.start.hasOwnProperty('trip_id')) {
         loadTrip(window.rnf.start.trip_id, (trip) => {
           const bounds = trip.boundaries.match(/-?\d+\.\d+/g);
           var boxes = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
@@ -41,7 +41,7 @@
       }
 
       // Single post: add a marker.
-      if (window.rnf.start.type === 'post') {
+      if (window.rnf.start.type === 'post' && window.rnf.start.hasOwnProperty('trip_id')) {
         addMarkerForTimestamp(window.rnf.start.timestamp);
       }
 
