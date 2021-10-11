@@ -44,7 +44,8 @@
   "require": {
     "johnpbloch/wordpress": "5.8.x",
     "wpackagist-plugin/cloudflare-stream": "1.0.4",
-    "wpackagist-plugin/cloudflare": "4.5.1"
+    "wpackagist-plugin/cloudflare": "4.5.1",
+    "wpackagist-plugin/visual-link-preview": "2.2.3"
   },
   "require-dev": {
     "wpackagist-theme/twentyseventeen":"~2.0",
@@ -60,8 +61,8 @@
   },
   "scripts": {
     "post-update-cmd": [
-      "wget -P wp-content/vendor/mapbox/ https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js",
-      "wget -P wp-content/vendor/mapbox/ https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css"
+      "wget -N -O wp-content/vendor/mapbox/mapbox-gj.js https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js",
+      "wget -N -O wp-content/vendor/mapbox/mapbox-gl.css https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css"
     ]
   }
 }

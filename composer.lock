@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ded15e85bc90b65bb2a49afb6b76705f",
+    "content-hash": "504d9b9f03a901ee47c634ebbbdfe85a",
     "packages": [
         {
             "name": "composer/installers",
@@ -332,6 +332,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/cloudflare-stream/"
+        },
+        {
+            "name": "wpackagist-plugin/visual-link-preview",
+            "version": "2.2.3",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/visual-link-preview/",
+                "reference": "trunk"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/visual-link-preview.zip?timestamp=1629206784"
+            },
+            "require": {
+                "composer/installers": "~1.0 || ~2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/visual-link-preview/"
         }
     ],
     "packages-dev": [
