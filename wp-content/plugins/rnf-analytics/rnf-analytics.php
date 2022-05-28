@@ -116,6 +116,9 @@ function rnf_analytics_ga_tracking_code_output() {
     <!-- Cloudflare Web Analytics -->
       <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8018535b62904b5093fe4b190b14d55f"}'></script>
     <!-- End Cloudflare Web Analytics -->
+    <!-- Plausible Analytics -->
+      <script defer data-domain="www.routenotfound.com" data-api="https://www.routenotfound.com/p/event" src="https://www.routenotfound.com/p/script.js"></script>
+    <!-- End Plausible Analytics -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $property ?>"></script>
     <script>
