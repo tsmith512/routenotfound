@@ -57,6 +57,11 @@ function rnf_postie_inreach_content_clean($post, $headers) {
         continue;
       }
 
+      if (strpos($line, "View the location") !== false) {
+        // This is a line with map and location, dump it
+        $line = null;
+      }
+
       if (strpos($line, "send a reply to") !== false) {
         // This is the line with the "view on map and reply" link, and while the
         // map is cool, I don't want to expose the link to reply.
