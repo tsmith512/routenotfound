@@ -42,10 +42,10 @@
     "vendor-dir": "wp-content/vendor"
   },
   "require": {
-    "johnpbloch/wordpress": "5.8.x",
-    "wpackagist-plugin/cloudflare-stream": "1.0.4",
-    "wpackagist-plugin/cloudflare": "4.5.1",
-    "wpackagist-plugin/visual-link-preview": "2.2.3"
+    "johnpbloch/wordpress": "6.0.x",
+    "wpackagist-plugin/cloudflare-stream": "1.0.5",
+    "wpackagist-plugin/cloudflare": "4.10.0",
+    "wpackagist-plugin/visual-link-preview": "2.2.4"
   },
   "require-dev": {
     "wpackagist-theme/twentyseventeen":"~2.0",
