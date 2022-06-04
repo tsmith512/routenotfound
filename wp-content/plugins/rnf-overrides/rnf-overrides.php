@@ -212,7 +212,7 @@ function rnf_overrides_oembed_handler($matches, $attr, $url, $rawattr) {
 wp_embed_register_handler('alltrails', '#https?://www.alltrails.com.+#', 'rnf_overrides_oembed_handler', 5);
 wp_embed_register_handler('oppo', '#https?://oppositelock.kinja.com.+#', 'rnf_overrides_oembed_handler', 5);
 wp_embed_register_handler('oande', '#https?://overland.kinja.com.+#', 'rnf_overrides_oembed_handler', 5);
-wp_embed_register_handler('tsc', '#https?://(www.)?tsmithcreative.com.+#', 'rnf_overrides_oembed_handler', 5);
+wp_embed_register_handler('tsc', '#https?://(www.)?tsmith(creative)?.com.+#', 'rnf_overrides_oembed_handler', 5);
 
 /**
  * Add a marker to the admin bar with an environment label.
