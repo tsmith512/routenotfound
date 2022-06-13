@@ -23,6 +23,13 @@ RewriteBase /
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 </IfModule>
 
+RewriteCond %{HTTP_HOST} staging.routenotfound.com
+RewriteCond %{REQUEST_URI} ^/wp-content/uploads
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond /var/www/rnf-prod%{REQUEST_URI} -f
+RewriteRule ^(.*)$ https://www.routenotfound.com/$1 [R=302,L]
+
 # Append a slash if it is omitted and would map to a directory,
 # Helps deal with incorrect redirect_to values on wp-login
 RewriteCond %{REQUEST_URI} !^/wp/
