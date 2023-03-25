@@ -34,10 +34,10 @@
     }
   },
   "require": {
-    "johnpbloch/wordpress": "6.0.x",
+    "johnpbloch/wordpress": "6.1.x",
     "wpackagist-plugin/cloudflare-stream": "1.0.5",
-    "wpackagist-plugin/cloudflare": "4.10.0",
-    "wpackagist-plugin/visual-link-preview": "2.2.4"
+    "wpackagist-plugin/cloudflare": "4.11.x",
+    "wpackagist-plugin/visual-link-preview": "2.2.x"
   },
   "require-dev": {
     "wpackagist-theme/twentyseventeen":"~3.0",
