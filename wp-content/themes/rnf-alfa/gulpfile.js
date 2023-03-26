@@ -14,8 +14,6 @@ const gulp = require('gulp');
 const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
-const imagemin = require('gulp-imagemin');
-const resize = require('gulp-image-resize');
 
 gulp.task('dist-clean', () => {
   return del([
@@ -40,45 +38,29 @@ gulp.task('header-images-fetch', (cb) => {
     }
 
     headerImages.forEach((filename, index) => {
-      outputCSS.push('.header-' + filename + ' { background-image: url("../img/headers/SIZE/' + filename + '.jpg"); }');
+      outputCSS.push(`
+        .header-${filename}                              { background-image: url("/cdn-cgi/image/width=600,quality=80/wp-content/themes/rnf-alfa/sources/img/headers/original/${filename}.jpg"); }
+        @media (min-width: 480px)  { .header-${filename} { background-image: url("/cdn-cgi/image/width=760,quality=80/wp-content/themes/rnf-alfa/sources/img/headers/original/${filename}.jpg"); } }
+        @media (min-width: 960px)  { .header-${filename} { background-image: url("/cdn-cgi/image/width=1280,quality=80/wp-content/themes/rnf-alfa/sources/img/headers/original/${filename}.jpg"); } }
+        @media (min-width: 1280px) { .header-${filename} { background-image: url("/cdn-cgi/image/width=1920,quality=80/wp-content/themes/rnf-alfa/sources/img/headers/original/${filename}.jpg"); } }
+      `);
       outputList.push('header-' + filename);
     });
 
-    fs.writeFileSync('dist/js/header-images.js', [
-      '(function(){',
-      '  \'use strict\';',
-      '  document.addEventListener("DOMContentLoaded", function() {',
-      '    var headerImages = ' + JSON.stringify(outputList),
-      '    var selectedImage = headerImages[Math.floor(Math.random() * headerImages.length)];',
-      '    document.querySelector(\'.custom-header\').classList.add(selectedImage);',
-      '  });',
-      '})();'
-    ].join('\n'));
+    fs.writeFileSync('dist/js/header-images.js',
+      `(function(){
+        'use strict';
+        document.addEventListener("DOMContentLoaded", () => {
+          const headerImages = ${JSON.stringify(outputList)};
+          const selectedImage = headerImages[Math.floor(Math.random() * headerImages.length)];
+          document.querySelector(\'.custom-header\').classList.add(selectedImage);
+        });
+      })()`
+    );
 
-    fs.writeFileSync('dist/css/header-images.css', [
-      outputCSS.join('\n').replace(/SIZE/g, 'tiny'),
-      ("@media (min-width: 480px) {" + outputCSS.join('\n').replace(/SIZE/g, 'narrow') + "}"),
-      ("@media (min-width: 960px) {" + outputCSS.join('\n').replace(/SIZE/g, 'medium') + "}"),
-      ("@media (min-width: 1280px) {" + outputCSS.join('\n').replace(/SIZE/g, 'wide') + "}"),
-    ].join('\n'));
-
+    fs.writeFileSync('dist/css/header-images.css', outputCSS.join('\n'));
     cb();
   });
-});
-
-gulp.task('header-images-sizes', () => {
-  return gulp.src('sources/img/headers/original/*.jpg')
-    .pipe(imagemin([imagemin.jpegtran({progressive: true})]))
-    .pipe(gulp.dest('dist/img/headers/wide/'))
-    .pipe(resize({width: 1280, height: 1280, crop: false, upscale: false, quality: 1}))
-    .pipe(imagemin([imagemin.jpegtran({progressive: true})]))
-    .pipe(gulp.dest('dist/img/headers/medium/'))
-    .pipe(resize({width: 760, height: 760, crop: false, upscale: false, quality: 1}))
-    .pipe(imagemin([imagemin.jpegtran({progressive: true})]))
-    .pipe(gulp.dest('dist/img/headers/narrow/'))
-    .pipe(resize({width: 600, height: 600, crop: false, upscale: false, quality: 1}))
-    .pipe(imagemin([imagemin.jpegtran({progressive: true})]))
-    .pipe(gulp.dest('dist/img/headers/tiny/'));
 });
 
 gulp.task('webfonts-fetch', (cb) => {
@@ -89,7 +71,7 @@ gulp.task('webfonts-fetch', (cb) => {
 gulp.task('build',
   gulp.series('dist-clean',
     gulp.parallel(
-      gulp.series('header-images-fetch', 'header-images-sizes'),
+      'header-images-fetch',
       'webfonts-fetch'
     )
   )
