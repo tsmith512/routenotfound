@@ -9,7 +9,7 @@
       });
     });
 
-    $('ul.wp-block-gallery, ul.blocks-gallery-grid').each(function(){
+    $('.wp-block-gallery, .blocks-gallery-grid').each(function(){
       var randomId = 'gallery-block-' + Math.floor(Math.random() * 1000);
       $(this).attr('id', randomId);
       $(this).find('a').attr('data-fancybox', randomId);
