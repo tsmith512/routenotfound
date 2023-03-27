@@ -966,6 +966,12 @@ a:hover .nav-title,
   display: none;
 }
 
+@media screen and (min-width: 48em) {
+  .menu-item-map-toggle {
+    display: none !important;
+  }
+}
+
 /*--------------------------------------------------------------
 13.0 Layout
 --------------------------------------------------------------*/

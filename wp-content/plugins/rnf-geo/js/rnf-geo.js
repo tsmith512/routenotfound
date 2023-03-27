@@ -63,6 +63,7 @@
 
     setupMapJumpLinks();
     setupMapCloseButton();
+    setupMapOpenLink();
   });
 
   /**
@@ -202,6 +203,16 @@
       });
     });
   };
+
+  const setupMapOpenLink = () => {
+    document.querySelectorAll('.menu-item-map-toggle-link').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        map.getContainer().parentElement.classList.add('visible');
+        map.resize();
+      });
+    });
+  }
 
   /**
    * Set up a scroll tracker on article containers to check the map as we go.
