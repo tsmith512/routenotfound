@@ -966,6 +966,7 @@ a:hover .nav-title,
   display: none;
 }
 
+/* The "Show Map" link in the main nav that we only show on narrow screens */
 @media screen and (min-width: 48em) {
   .menu-item-map-toggle {
     display: none !important;
@@ -1293,6 +1294,11 @@ h1.entry-title {
 
 .entry-meta:after {
   content: " //";
+}
+
+.entry-meta .rnf-map-jump-icon .icon-thumb-tack {
+  display: inline-block;
+  margin-right: 0.25em;
 }
 
 .entry-meta a {

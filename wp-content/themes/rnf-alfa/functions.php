@@ -182,8 +182,9 @@ function twentyseventeen_time_link() {
     $timestamp = get_post_time('U', true);
 
     $map_link_text = (!empty($post->rnf_geo_city)) ? $post->rnf_geo_city : "Map";
+    $map_icon = "<span class='rnf-map-jump-icon'>" . twentyseventeen_get_svg( array( 'icon' => 'thumb-tack' ) ) . "</span>";
 
-    $time_header .= " / <a href='#' class='rnf-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
+    $time_header .= " / " . $map_icon .  "<a href='#' class='rnf-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
   }
 
   return $time_header;
