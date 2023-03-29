@@ -56,6 +56,7 @@ function rnf_theme_register_scripts_and_styles() {
 
   // And remove TwentySeventeen stuff we do not need
   wp_dequeue_style('twentyseventeen-ie8');
+  wp_dequeue_style('classic-theme-styles');
   wp_dequeue_script('html5');
   wp_dequeue_script('twentyseventeen-global');
   wp_dequeue_script('jquery-scrollto');
@@ -71,7 +72,17 @@ add_action( 'wp_enqueue_scripts', 'rnf_theme_register_scripts_and_styles', 20 );
  */
 function rnf_theme_css_preload($html, $handle, $href, $media) {
   // Hitting all the big CSS
-  if (in_array($handle, array('rnf-hco-typefaces', 'rnf-header-images', 'fancybox-style', 'mapbox-style', 'wp-block-library', 'rnf-maps-geo', 'cloudflare-stream-block-style-css', 'twentyseventeen-block-style-css'))) {
+  if (in_array($handle, array(
+    'rnf-hco-typefaces',
+    'rnf-header-images',
+    'fancybox-style',
+    'mapbox-style',
+    'wp-block-library',
+    'rnf-geo-style',
+    'cloudflare-stream-block-style-css',
+    'twentyseventeen-block-style-css',
+    'vlp-public',
+    ))) {
 
     // Set rel=preload
     $preload = str_replace('stylesheet', 'preload', $html);
@@ -87,27 +98,6 @@ function rnf_theme_css_preload($html, $handle, $href, $media) {
   return $html;
 }
 add_filter('style_loader_tag', 'rnf_theme_css_preload', 900, 4);
-
-/**
- * Implements script_loader_tag filter to rewrite JS tags to add async or defer
- * as appropriate.
- */
-function rnf_theme_js_asyncdefer($tag, $handle, $src) {
-  // Async's -- Currently none.
-  /*
-  if (in_array($handle, array())) {
-    return str_replace('<script ', '<script async ', $tag);
-  }
-  */
-
-  // Defer's
-  if (in_array($handle, array('wp-embed', 'mapbox-core', 'jquery-core'))) {
-    return str_replace('<script ', '<script defer ', $tag);
-  }
-
-  return $tag;
-}
-add_filter('script_loader_tag', 'rnf_theme_js_asyncdefer', 900, 3);
 
 /**
  * Implements wp_default_scripts to drop jQuery Migrate from pages viewed in
