@@ -24,45 +24,36 @@
           "reference": "v3.5.6"
         }
       }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "filamentgroup/loadCSS",
-        "version": "2.0.1",
-        "source": {
-          "url": "https://github.com/filamentgroup/loadCSS.git",
-          "type": "git",
-          "reference": "v2.0.1"
-        }
-      }
     }
   ],
   "config": {
-    "vendor-dir": "wp-content/vendor"
+    "vendor-dir": "wp-content/vendor",
+    "allow-plugins": {
+      "johnpbloch/wordpress-core-installer": true,
+      "composer/installers": true
+    }
   },
   "require": {
-    "johnpbloch/wordpress": "6.0.x",
+    "johnpbloch/wordpress": "6.1.x",
     "wpackagist-plugin/cloudflare-stream": "1.0.5",
-    "wpackagist-plugin/cloudflare": "4.10.0",
-    "wpackagist-plugin/visual-link-preview": "2.2.4"
+    "wpackagist-plugin/cloudflare": "4.11.x",
+    "wpackagist-plugin/visual-link-preview": "2.2.x"
   },
   "require-dev": {
     "wpackagist-theme/twentyseventeen":"~3.0",
     "wpackagist-plugin/wp-cfm": "1.7.2",
-    "wpackagist-plugin/autoptimize":"2.9.2",
     "wpackagist-plugin/rocket-lazy-load":"2.3.4",
     "wpackagist-plugin/postie":"1.9.57",
-    "fancyapps/fancybox":"3.5.x",
-    "filamentgroup/loadcss":"2.x.x"
+    "fancyapps/fancybox":"3.5.x"
   },
   "extra": {
     "wordpress-install-dir": "wp"
   },
   "scripts": {
     "post-update-cmd": [
-      "wget -N -O wp-content/vendor/mapbox/mapbox-gj.js https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js",
-      "wget -N -O wp-content/vendor/mapbox/mapbox-gl.css https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css"
+      "mkdir -p wp-content/vendor/mapbox",
+      "wget -O wp-content/vendor/mapbox/mapbox-gl.js https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js",
+      "wget -O wp-content/vendor/mapbox/mapbox-gl.css https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css"
     ]
   }
 }

@@ -47,9 +47,6 @@ function rnf_theme_register_scripts_and_styles() {
   // (Own) Media handlers
   wp_register_script('rnf-alfa-js-media', get_stylesheet_directory_uri() . '/js/media.js', array('fancybox-script', 'jquery'), null, true);
 
-  // LoadCSS polyfill
-  wp_register_script('rnf-loadcss', content_url() . '/vendor/filamentgroup/loadCSS/src/cssrelpreload.js', array(), null, true);
-
   // Was loading this conditionally on `post_gallery` filter, but I haven't
   // figured out how to attach it to Gutenberg blocks yet, and let's face it,
   // this is an entirely photo-driven site, this is actually needed on all
@@ -59,6 +56,7 @@ function rnf_theme_register_scripts_and_styles() {
 
   // And remove TwentySeventeen stuff we do not need
   wp_dequeue_style('twentyseventeen-ie8');
+  wp_dequeue_style('classic-theme-styles');
   wp_dequeue_script('html5');
   wp_dequeue_script('twentyseventeen-global');
   wp_dequeue_script('jquery-scrollto');
@@ -73,10 +71,18 @@ add_action( 'wp_enqueue_scripts', 'rnf_theme_register_scripts_and_styles', 20 );
  * CSS.
  */
 function rnf_theme_css_preload($html, $handle, $href, $media) {
-  // Only working on the HCO typefaces
-  if (in_array($handle, array('rnf-hco-typefaces', 'rnf-header-images', 'fancybox-style', 'mapbox-style', 'wp-block-library', 'rnf-maps-geo', 'cloudflare-stream-block-style-css', 'twentyseventeen-block-style-css'))) {
-    // We're going to use rel=preload, so pull in the polyfill
-    wp_enqueue_script('rnf-loadcss');
+  // Hitting all the big CSS
+  if (in_array($handle, array(
+    'rnf-hco-typefaces',
+    'rnf-header-images',
+    'fancybox-style',
+    'mapbox-style',
+    'wp-block-library',
+    'rnf-geo-style',
+    'cloudflare-stream-block-style-css',
+    'twentyseventeen-block-style-css',
+    'vlp-public',
+    ))) {
 
     // Set rel=preload
     $preload = str_replace('stylesheet', 'preload', $html);
@@ -88,31 +94,10 @@ function rnf_theme_css_preload($html, $handle, $href, $media) {
     return $resolve;
   }
 
-  // No work to do for non HCO typefaces
+  // Return anything else unmodified
   return $html;
 }
 add_filter('style_loader_tag', 'rnf_theme_css_preload', 900, 4);
-
-/**
- * Implements script_loader_tag filter to rewrite JS tags to add async or defer
- * as appropriate.
- */
-function rnf_theme_js_asyncdefer($tag, $handle, $src) {
-  // Async's -- Currently none.
-  /*
-  if (in_array($handle, array())) {
-    return str_replace('<script ', '<script async ', $tag);
-  }
-  */
-
-  // Defer's
-  if (in_array($handle, array('wp-embed', 'mapbox-core', 'jquery-core'))) {
-    return str_replace('<script ', '<script defer ', $tag);
-  }
-
-  return $tag;
-}
-add_filter('script_loader_tag', 'rnf_theme_js_asyncdefer', 900, 3);
 
 /**
  * Implements wp_default_scripts to drop jQuery Migrate from pages viewed in
@@ -187,12 +172,19 @@ function twentyseventeen_time_link() {
     $timestamp = get_post_time('U', true);
 
     $map_link_text = (!empty($post->rnf_geo_city)) ? $post->rnf_geo_city : "Map";
+    $map_icon = "<span class='rnf-map-jump-icon'>" . twentyseventeen_get_svg( array( 'icon' => 'thumb-tack' ) ) . "</span>";
 
-    $time_header .= " / <a href='#' class='rnf-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
+    $time_header .= " / " . $map_icon .  "<a href='#' class='rnf-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
   }
 
   return $time_header;
 }
+
+function rnf_theme_add_map_to_menu($items) {
+  $link = '<li class="menu-item-map-toggle"><a href="#" class="menu-item-map-toggle-link">Show Map</a></li>';
+  return $items . $link;
+}
+add_filter('wp_nav_menu_items', 'rnf_theme_add_map_to_menu', 100);
 
 /**
  * Overrides twentyseventeen's default post edit link because it took a bunch of

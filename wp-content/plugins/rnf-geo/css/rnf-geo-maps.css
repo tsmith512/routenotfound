@@ -15,6 +15,7 @@
 }
 
 .rnf-geo-map-widget #mapclose {
+  cursor: pointer;
   position: absolute;
   z-index: 200;
   left: 50%;
