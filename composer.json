@@ -42,7 +42,6 @@
   "require-dev": {
     "wpackagist-theme/twentyseventeen":"~3.0",
     "wpackagist-plugin/wp-cfm": "1.7.2",
-    "wpackagist-plugin/autoptimize":"2.9.2",
     "wpackagist-plugin/rocket-lazy-load":"2.3.4",
     "wpackagist-plugin/postie":"1.9.57",
     "fancyapps/fancybox":"3.5.x"
