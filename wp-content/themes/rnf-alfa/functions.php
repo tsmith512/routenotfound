@@ -162,7 +162,17 @@ function twentyseventeen_time_link() {
 
   // Wrap the time string in a link, and preface it with 'Posted on'.
   $esc_path = esc_url( get_permalink() );
-  $time_header = "// <a href='{$esc_path}' rel='bookmark'>{$time_string}</a>";
+  $header = "// <a href='{$esc_path}' rel='bookmark'>{$time_string}</a>";
+
+  // Get the author name; wrap it in a link.
+  $byline = sprintf(
+    __( 'by %s', 'twentyseventeen' ),
+    '<span class="author vcard"><a class="url fn n" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '">' . get_the_author() . '</a></span>'
+  );
+
+
+  $header .= ' ' . $byline;
+
 
   // Now determine if we should show a link to the post on a map. That logic
   // is determined in rnf-geo.php and is: is post _about_ a trip _during_ a trip?
@@ -174,10 +184,18 @@ function twentyseventeen_time_link() {
     $map_link_text = (!empty($post->rnf_geo_city)) ? $post->rnf_geo_city : "Map";
     $map_icon = "<span class='rnf-map-jump-icon'>" . twentyseventeen_get_svg( array( 'icon' => 'thumb-tack' ) ) . "</span>";
 
-    $time_header .= " / " . $map_icon .  "<a href='#' class='rnf-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
+    $header .= " / " . $map_icon .  "<a href='#' class='rnf-map-jump' data-timestamp='{$timestamp}'>{$map_link_text}</a>";
   }
 
-  return $time_header;
+  return $header;
+}
+
+/**
+ * Replace twentyseventeen_posted_on() which is called on single post headers with
+ * the above function to show an author name with the map link in indexes.
+ */
+function twentyseventeen_posted_on() {
+  print twentyseventeen_time_link();
 }
 
 function rnf_theme_add_map_to_menu($items) {
