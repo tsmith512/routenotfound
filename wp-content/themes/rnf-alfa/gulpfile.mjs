@@ -1,14 +1,13 @@
 /**
- * Fetch RNF header images from the R2 bucket they live in,
- * (TODO) optimize them for web display across a few screen sizes,
- * generate a CSS index that matches class names to actual images, and
- * output a JS file that WordPress can include which automatically assigns one
- * on DOMContentLoaded.
+ * Simple script to pull down the header image options and make the CSS and JS
+ * outputs to make that work. Also pull down the HFJ typefaces payload to host.
+ * Pulls from R2 Storage with awscli --- make sure the R2 endpoint is set in env.
+ *
+ * @TODO: This really doesn't need to be in gulp anymore...
  */
 
 import * as dotenv from 'dotenv';
 dotenv.config();
-
 
 import gulp from 'gulp';
 const { series, parallel } = gulp;
