@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Alfa theme for Route Not Found",
   "devDependencies": {
-    "del": "^4.1.0",
+    "del": "^7.0.0",
     "gulp": "^4.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
   }
 }
