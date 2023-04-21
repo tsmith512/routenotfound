@@ -6,19 +6,6 @@
  * supporting the altered directory structure ('wp' for core with an external
  * 'wp-content').
  *
- * ---
- *
- * The wp-config.php creation script uses this file during the installation. You
- * don't have to use the web site, you can copy this file to "wp-config.php" and
- * fill in the values.
- *
- * This file contains the following configurations:
- *
- * * MySQL settings
- * * Secret keys
- * * Database table prefix
- * * ABSPATH
- *
  * @link https://codex.wordpress.org/Editing_wp-config.php
  *
  * @package WordPress
@@ -33,12 +20,18 @@ define( 'DISALLOW_FILE_MODS', true );
   // Disallow edits and updates on themes and plugins; it's all handled in code
   // so hide the editor in the admin to keep it out of the way.
 
-if ($_SERVER['HTTP_HOST'] !== 'PRODUCTION HOSTNAME HERE') {
+ini_set( 'upload_max_size' , '128M' );
+ini_set( 'post_max_size', '128M');
+ini_set( 'memory_limit', '128M' );
+
+if ($_SERVER['HTTP_HOST'] !== 'www.routenotfound.com') {
+  // All non-prod instances
   define('WP_DEBUG', true);
   define('WP_DEBUG_LOG', false);
   define('WP_DEBUG_DISPLAY', true);
 } else {
-  // @TODO: This should be for all dev/stage envs, too, need to confirm they're working first
+  // Prod
+  define('WP_DEBUG', false);
   define('FORCE_SSL_ADMIN', true);
 }
 
@@ -109,7 +102,7 @@ $table_prefix  = 'wp_';
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
 define('WP_DEBUG', false);
-
+define( 'DISALLOW_FILE_MODS', true );
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
