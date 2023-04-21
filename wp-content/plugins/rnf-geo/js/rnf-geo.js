@@ -205,7 +205,7 @@
   };
 
   const setupMapOpenLink = () => {
-    document.querySelectorAll('.menu-item-map-toggle-link').forEach((link) => {
+    document.querySelectorAll('.map-toggle').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         map.getContainer().parentElement.classList.add('visible');
