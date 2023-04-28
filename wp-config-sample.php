@@ -37,7 +37,12 @@ if ($_SERVER['HTTP_HOST'] !== 'www.routenotfound.com') {
 
 define('DISABLE_WP_CRON', true);
 
-define('RNF_VERSION', trim(exec('git describe --always')));
+/* Docker+Git Submodules made this hard, so we mount just the commit hash marker into the container */
+if (file_exists(dirname(__FILE__) . '/.git-checkout-commit-hash')) {
+  define('RNF_VERSION', trim(file_get_contents(dirname(__FILE__) . '/.git-checkout-commit-hash')));
+} else {
+  define('RNF_VERSION', trim(exec('git describe --always')));
+}
 
 /** Changes location where Autoptimize stores optimized files */
 define('AUTOPTIMIZE_CACHE_CHILD_DIR','/uploads/autoptimize/');
