@@ -37,28 +37,23 @@ if ($_SERVER['HTTP_HOST'] !== 'www.routenotfound.com') {
 
 define('DISABLE_WP_CRON', true);
 
-/* Docker+Git Submodules made this hard, so we mount just the commit hash marker into the container */
-if (file_exists(dirname(__FILE__) . '/.git-checkout-commit-hash')) {
-  define('RNF_VERSION', trim(file_get_contents(dirname(__FILE__) . '/.git-checkout-commit-hash')));
-} else {
-  define('RNF_VERSION', trim(exec('git describe --always')));
-}
+define('RNF_VERSION', trim(exec('git describe --always')));
 
 /** Changes location where Autoptimize stores optimized files */
 define('AUTOPTIMIZE_CACHE_CHILD_DIR','/uploads/autoptimize/');
 
-// ** MySQL settings - You can get this info from your web host ** //
+/* MySQL settings - Defaulting to the environment vars from rnf-deploy */
 /** The name of the database for WordPress */
-define('DB_NAME', 'database_name_here');
+define('DB_NAME', $_ENV['MS_DB']);
 
 /** MySQL database username */
-define('DB_USER', 'username_here');
+define('DB_USER', $_ENV['MS_USER']);
 
 /** MySQL database password */
-define('DB_PASSWORD', 'password_here');
+define('DB_PASSWORD', $_ENV['MS_PASSWD']);
 
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', $_ENV['MS_HOST']);
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
