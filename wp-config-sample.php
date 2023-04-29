@@ -20,10 +20,6 @@ define( 'DISALLOW_FILE_MODS', true );
   // Disallow edits and updates on themes and plugins; it's all handled in code
   // so hide the editor in the admin to keep it out of the way.
 
-ini_set( 'upload_max_size' , '128M' );
-ini_set( 'post_max_size', '128M');
-ini_set( 'memory_limit', '128M' );
-
 if ($_SERVER['HTTP_HOST'] !== 'www.routenotfound.com') {
   // All non-prod instances
   define('WP_DEBUG', true);
