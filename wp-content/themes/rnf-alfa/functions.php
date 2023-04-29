@@ -27,25 +27,25 @@ function rnf_theme_register_scripts_and_styles() {
   // Reregistering it by the same name makes sure that the parent theme's CSS
   // dependencies (mostly for gutenberg blocks) still render.
   wp_deregister_style('twentyseventeen-style');
-  wp_register_style('twentyseventeen-style', get_stylesheet_uri(), array(), null);
+  wp_register_style('twentyseventeen-style', get_stylesheet_uri(), array(), RNF_VERSION);
 
   // Drop the Libre Franklin, I'm gonna use something else.
   wp_deregister_style('twentyseventeen-fonts');
 
-  wp_register_style('rnf-header-images', get_stylesheet_directory_uri() . '/dist/css/header-images.css', array(), null);
+  wp_register_style('rnf-header-images', get_stylesheet_directory_uri() . '/dist/css/header-images.css', array(), RNF_VERSION);
   wp_enqueue_style('rnf-header-images');
 
-  wp_register_style('rnf-hco-typefaces', '//cloud.typography.com/6795652/6519212/css/fonts.css', array(), null);
+  wp_register_style('rnf-hco-typefaces', '//cloud.typography.com/6795652/6519212/css/fonts.css', array(), RNF_VERSION);
   wp_enqueue_style('rnf-hco-typefaces');
 
   // (Own) General site-wide stuff
-  wp_register_script('rnf-alfa-js-main', get_stylesheet_directory_uri() . '/js/main.js', array(), null, true);
+  wp_register_script('rnf-alfa-js-main', get_stylesheet_directory_uri() . '/js/main.js', array(), RNF_VERSION, true);
   wp_enqueue_script('rnf-alfa-js-main');
-  wp_register_script('rnf-alfa-js-header-images', get_stylesheet_directory_uri() . '/dist/js/header-images.js', array(), null, true);
+  wp_register_script('rnf-alfa-js-header-images', get_stylesheet_directory_uri() . '/dist/js/header-images.js', array(), RNF_VERSION, true);
   wp_enqueue_script('rnf-alfa-js-header-images');
 
   // (Own) Media handlers
-  wp_register_script('rnf-alfa-js-media', get_stylesheet_directory_uri() . '/js/media.js', array('fancybox-script', 'jquery'), null, true);
+  wp_register_script('rnf-alfa-js-media', get_stylesheet_directory_uri() . '/js/media.js', array('fancybox-script', 'jquery'), RNF_VERSION, true);
 
   // Was loading this conditionally on `post_gallery` filter, but I haven't
   // figured out how to attach it to Gutenberg blocks yet, and let's face it,
@@ -137,8 +137,8 @@ add_action('wp_default_scripts', 'rnf_theme_move_jq');
  * @TODO: Can this be executed only when needed? Also replace with PhotoSwipe
  */
 function rnf_theme_register_lightbox() {
-  wp_register_style('fancybox-style', content_url('/vendor/fancyapps/fancybox/dist/jquery.fancybox.min.css'), array(), null);
-  wp_register_script('fancybox-script', content_url('/vendor/fancyapps/fancybox/dist/jquery.fancybox.min.js'), array('jquery'), null, true);
+  wp_register_style('fancybox-style', content_url('/vendor/fancyapps/fancybox/dist/jquery.fancybox.min.css'), array(), RNF_VERSION);
+  wp_register_script('fancybox-script', content_url('/vendor/fancyapps/fancybox/dist/jquery.fancybox.min.js'), array('jquery'), RNF_VERSION, true);
 }
 add_action( 'wp_enqueue_scripts', 'rnf_theme_register_lightbox', 10 );
 
