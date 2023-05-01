@@ -10,13 +10,20 @@
 
 ?>
 <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_attr_e( 'Top Menu', 'twentyseventeen' ); ?>">
-	<button class="menu-toggle" aria-controls="top-menu" aria-expanded="false">
-		<?php
-		echo twentyseventeen_get_svg( array( 'icon' => 'bars' ) );
-		echo twentyseventeen_get_svg( array( 'icon' => 'close' ) );
-		_e( 'Menu', 'twentyseventeen' );
-		?>
-	</button>
+	<div class="menu-mobile-buttons">
+		<button class="map-toggle">
+			<?php
+			echo twentyseventeen_get_svg( array( 'icon' => 'map' ) );
+			?>Map
+		</button>
+		<button class="menu-toggle" aria-controls="top-menu" aria-expanded="false">
+			<?php
+			echo twentyseventeen_get_svg( array( 'icon' => 'bars' ) );
+			echo twentyseventeen_get_svg( array( 'icon' => 'close' ) );
+			_e( 'Menu', 'twentyseventeen' );
+			?>
+		</button>
+	</div>
 
 	<?php
 	wp_nav_menu(

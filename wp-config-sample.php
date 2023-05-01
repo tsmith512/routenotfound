@@ -6,19 +6,6 @@
  * supporting the altered directory structure ('wp' for core with an external
  * 'wp-content').
  *
- * ---
- *
- * The wp-config.php creation script uses this file during the installation. You
- * don't have to use the web site, you can copy this file to "wp-config.php" and
- * fill in the values.
- *
- * This file contains the following configurations:
- *
- * * MySQL settings
- * * Secret keys
- * * Database table prefix
- * * ABSPATH
- *
  * @link https://codex.wordpress.org/Editing_wp-config.php
  *
  * @package WordPress
@@ -33,12 +20,14 @@ define( 'DISALLOW_FILE_MODS', true );
   // Disallow edits and updates on themes and plugins; it's all handled in code
   // so hide the editor in the admin to keep it out of the way.
 
-if ($_SERVER['HTTP_HOST'] !== 'PRODUCTION HOSTNAME HERE') {
+if ($_SERVER['HTTP_HOST'] !== 'www.routenotfound.com') {
+  // All non-prod instances
   define('WP_DEBUG', true);
   define('WP_DEBUG_LOG', false);
   define('WP_DEBUG_DISPLAY', true);
 } else {
-  // @TODO: This should be for all dev/stage envs, too, need to confirm they're working first
+  // Prod
+  define('WP_DEBUG', false);
   define('FORCE_SSL_ADMIN', true);
 }
 
@@ -49,18 +38,18 @@ define('RNF_VERSION', trim(exec('git describe --always')));
 /** Changes location where Autoptimize stores optimized files */
 define('AUTOPTIMIZE_CACHE_CHILD_DIR','/uploads/autoptimize/');
 
-// ** MySQL settings - You can get this info from your web host ** //
+/* MySQL settings - Defaulting to the environment vars from rnf-deploy */
 /** The name of the database for WordPress */
-define('DB_NAME', 'database_name_here');
+define('DB_NAME', $_ENV['MS_DB']);
 
 /** MySQL database username */
-define('DB_USER', 'username_here');
+define('DB_USER', $_ENV['MS_USER']);
 
 /** MySQL database password */
-define('DB_PASSWORD', 'password_here');
+define('DB_PASSWORD', $_ENV['MS_PASSWD']);
 
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', $_ENV['MS_HOST']);
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -109,7 +98,7 @@ $table_prefix  = 'wp_';
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
 define('WP_DEBUG', false);
-
+define( 'DISALLOW_FILE_MODS', true );
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */

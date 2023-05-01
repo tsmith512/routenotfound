@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "06a9fa0fb4ef7f3f3d90e101954076db",
+    "content-hash": "3a1dbc63233fb700f77d26d608dbefa7",
     "packages": [
         {
             "name": "composer/installers",
@@ -153,20 +153,20 @@
         },
         {
             "name": "johnpbloch/wordpress",
-            "version": "6.1.1",
+            "version": "6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpbloch/wordpress.git",
-                "reference": "d9ee7d6193781c9ee6288be6ca5681ee0c3f85b8"
+                "reference": "de3b59e7e724bdc6c334f93ddbf2f9e06a92267b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress/zipball/d9ee7d6193781c9ee6288be6ca5681ee0c3f85b8",
-                "reference": "d9ee7d6193781c9ee6288be6ca5681ee0c3f85b8",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress/zipball/de3b59e7e724bdc6c334f93ddbf2f9e06a92267b",
+                "reference": "de3b59e7e724bdc6c334f93ddbf2f9e06a92267b",
                 "shasum": ""
             },
             "require": {
-                "johnpbloch/wordpress-core": "6.1.1",
+                "johnpbloch/wordpress-core": "6.2.0",
                 "johnpbloch/wordpress-core-installer": "^1.0 || ^2.0",
                 "php": ">=5.6.20"
             },
@@ -195,20 +195,20 @@
                 "issues": "https://core.trac.wordpress.org/",
                 "source": "https://core.trac.wordpress.org/browser"
             },
-            "time": "2022-11-15T19:12:03+00:00"
+            "time": "2023-03-30T04:14:55+00:00"
         },
         {
             "name": "johnpbloch/wordpress-core",
-            "version": "6.1.1",
+            "version": "6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpbloch/wordpress-core.git",
-                "reference": "c9688597721b8579f3c29028e572a7b9753db893"
+                "reference": "cec139b6b71913343b68fbf043c468407a921225"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/c9688597721b8579f3c29028e572a7b9753db893",
-                "reference": "c9688597721b8579f3c29028e572a7b9753db893",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/cec139b6b71913343b68fbf043c468407a921225",
+                "reference": "cec139b6b71913343b68fbf043c468407a921225",
                 "shasum": ""
             },
             "require": {
@@ -216,7 +216,7 @@
                 "php": ">=5.6.20"
             },
             "provide": {
-                "wordpress/core-implementation": "6.1.1"
+                "wordpress/core-implementation": "6.2.0"
             },
             "type": "wordpress-core",
             "notification-url": "https://packagist.org/downloads/",
@@ -243,7 +243,7 @@
                 "source": "https://core.trac.wordpress.org/browser",
                 "wiki": "https://codex.wordpress.org/"
             },
-            "time": "2022-11-15T19:11:58+00:00"
+            "time": "2023-03-30T04:14:50+00:00"
         },
         {
             "name": "johnpbloch/wordpress-core-installer",
@@ -421,15 +421,15 @@
         },
         {
             "name": "wpackagist-theme/twentyseventeen",
-            "version": "3.1",
+            "version": "3.2",
             "source": {
                 "type": "svn",
                 "url": "https://themes.svn.wordpress.org/twentyseventeen/",
-                "reference": "3.1"
+                "reference": "3.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/theme/twentyseventeen.3.1.zip"
+                "url": "https://downloads.wordpress.org/theme/twentyseventeen.3.2.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"

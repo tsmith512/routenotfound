@@ -26,8 +26,8 @@ require_once "rnf-geo-settings.php";
  * displays, including passing in the rnf_geo_settings data.
  */
 function rnf_geo_register_assets() {
-  wp_register_script('mapbox-core', content_url('/vendor/mapbox/mapbox-gl.js'), array(), null, true);
-  wp_register_style('mapbox-style', content_url('/vendor/mapbox/mapbox-gl.css'), array(), null);
+  wp_register_script('mapbox-core', content_url('/vendor/mapbox/mapbox-gl.js'), array(), RNF_VERSION, true);
+  wp_register_style('mapbox-style', content_url('/vendor/mapbox/mapbox-gl.css'), array(), RNF_VERSION);
 
   wp_register_script('rnf-geo-js', plugin_dir_url( __FILE__ ) . 'js/rnf-geo.js', array('mapbox-core'), RNF_VERSION, true);
   wp_register_style('rnf-geo-style', plugin_dir_url( __FILE__ ) . 'css/rnf-geo-maps.css', array('mapbox-style'), RNF_VERSION);
