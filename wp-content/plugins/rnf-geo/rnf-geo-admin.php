@@ -1,7 +1,7 @@
 <?php
 
 function rnf_geo_admin_page() {
-  $trips = rnf_geo_get_trips();
+  $trips = rnf_geo_get_trips() ?: [];
   $current = rnf_geo_current_trip();
   ?>
   <div class="wrap">
@@ -19,6 +19,11 @@ function rnf_geo_admin_page() {
         </tr>
       </thead>
       <tbody>
+        <?php if (!count($trips)): ?>
+          <tr>
+            <td colspan="6"><strong>Error:</strong> Empty trip list. Check for backend connection errors or refresh cache?</td>
+          </tr>
+        <?php endif; ?>
         <?php foreach ($trips as $index => $trip): ?>
           <?php /* This is a terrible way to mark a row, do it better. */ ?>
           <tr <?php if (isset($current->id) && $trip->id == $current->id) { echo "style='font-weight: bold; background-color: #ccffcc;'"; } ?>>

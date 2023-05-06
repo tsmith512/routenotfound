@@ -121,7 +121,10 @@ function rnf_geo_get_trips($trip_id = null) {
 
     if ($result['response']['code'] == 200) {
       $trips = json_decode($result['body']);
-      set_transient( 'rnf_geo_trips_cache', $trips, DAY_IN_SECONDS );
+      // This can remain cahced a long time; the use case is "it never changes
+      // unless I make a change in the backend and immediately need it on the
+      // frontend, so I clear the cache anyway even if the TTL was short."
+      set_transient( 'rnf_geo_trips_cache', $trips, YEAR_IN_SECONDS );
     }
   } else {
     $trips = $transient;
@@ -233,10 +236,10 @@ function rnf_geo_is_post_during_trip(&$post) {
 
       // Get the timestamps of the beginning and end of the trip
       $trip_details = rnf_geo_get_trips($trip_id);
-      $trip_details = reset($trip_details);
+      $trip_details = $trip_details ? reset($trip_details) : false;
 
       // So is this post actually dated _during_ the trip it is about?
-      $post->rnf_geo_post_is_on_trip = ($trip_details->start <= $timestamp && $timestamp <= $trip_details->end);
+      $post->rnf_geo_post_is_on_trip = $trip_details ? ($trip_details->start <= $timestamp && $timestamp <= $trip_details->end) : false;
 
       if ($post->rnf_geo_post_is_on_trip) {
         rnf_geo_attach_city($post);
@@ -295,7 +298,9 @@ function rnf_geo_attach_city(&$post) {
  * object and, if created, the corresponding post category object.
  */
 function rnf_geo_current_trip() {
-  $trips =  rnf_geo_get_trips();
+  $trips = rnf_geo_get_trips();
+  if (! is_array($trips)) return false;
+  // @TODO: But throw an error...
 
   $current_trip = false;
   foreach ($trips as $trip) {
