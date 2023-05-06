@@ -35,3 +35,4 @@ Thumbs.db
 ._*
 *.un~
 .git-checkout-commit-hash
+salt.php
