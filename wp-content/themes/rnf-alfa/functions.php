@@ -198,12 +198,6 @@ function twentyseventeen_posted_on() {
   print twentyseventeen_time_link();
 }
 
-function rnf_theme_add_map_to_menu($items) {
-  $link = '<li class="menu-item-map-toggle"><a href="#" class="menu-item-map-toggle-link">Show Map</a></li>';
-  return $items . $link;
-}
-add_filter('wp_nav_menu_items', 'rnf_theme_add_map_to_menu', 100);
-
 /**
  * Overrides twentyseventeen's default post edit link because it took a bunch of
  * CSS to make a space in front of it when it could just be a space.
