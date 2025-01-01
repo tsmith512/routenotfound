@@ -34,7 +34,7 @@
     }
   },
   "require": {
-    "johnpbloch/wordpress": "6.5.x",
+    "johnpbloch/wordpress": "6.7.x",
     "wpackagist-plugin/cloudflare-stream": "1.0.5",
     "wpackagist-plugin/cloudflare": "4.11.x",
     "wpackagist-plugin/visual-link-preview": "2.2.x"
