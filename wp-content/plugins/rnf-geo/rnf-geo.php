@@ -314,3 +314,30 @@ function rnf_geo_current_trip() {
   }
   return $current_trip;
 }
+
+/**
+ * Given a term SLUG (I know), get a count and wordcount of all posts in the term.
+ */
+function rnf_geo_get_trip_content_metrics($slug) {
+  $posts = get_posts(array(
+    'nopaging' => TRUE,
+    'post_status' => 'publish',
+    'post_type' => 'post',
+    'tax_query' => array(
+      array('taxonomy' => 'category', 'field' => 'slug', 'terms' => array($slug)),
+    ),
+  ));
+
+  $words = 0;
+
+  foreach ($posts as $post) {
+    $words += str_word_count(
+      wp_strip_all_tags(
+        strip_shortcodes($post->post_content),
+        TRUE
+      )
+    );
+  }
+
+  return array('posts' => count($posts), 'words' => $words);
+}
