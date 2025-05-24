@@ -3,6 +3,8 @@
 function rnf_geo_admin_page() {
   $trips = rnf_geo_get_trips() ?: [];
   $current = rnf_geo_current_trip();
+  $total_posts = 0;
+  $total_words = 0;
   ?>
   <div class="wrap">
     <h1>Trips in Location Tracker <a id="rnf-cache-clear" class="page-title-action">Clear Trips Cache</a></h1>
@@ -16,6 +18,7 @@ function rnf_geo_admin_page() {
           <th>Started</th>
           <th>Ended</th>
           <th>WordPress Category Assigned?</th>
+          <th>Metrics</th>
         </tr>
       </thead>
       <tbody>
@@ -43,9 +46,35 @@ function rnf_geo_admin_page() {
                 }
               ?>
             </td>
+            <td>
+              <?php
+                if ($trip->wp_category !== false) {
+                  $stats = rnf_geo_get_trip_content_metrics($trip->slug);
+                  print "Posts: " . $stats['posts'] . "<br /> Words: " . $stats['words'];
+                  $total_posts += $stats['posts'];
+                  $total_words += $stats['words'];
+                }
+              ?>
+            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
+      <thead>
+        <tr>
+          <th>Trip ID</th>
+          <th>Machine Name</th>
+          <th>Title</th>
+          <th>Started</th>
+          <th>Ended</th>
+          <th>Category</th>
+          <th>
+            <strong>Total Metrics</strong>
+            <br />Total posts: <?php print $total_posts; ?>
+            <br />Total words: <?php print $total_words; ?>
+          </th>
+        </tr>
+      </thead>
+
     </table>
   </div>
 

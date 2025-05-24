@@ -166,7 +166,7 @@
 
     // Currently only showing one of these at a time, but it'd be cool to do
     // something more interactive.
-    window.rnf.rnfPostMarker = new mapboxgl.Marker({ color: '#FF3300' })
+    window.rnf.rnfPostMarker = new mapboxgl.Marker({ color: '#CCCCCC' })
       .setLngLat(waypoint)
       .addTo(map);
   }
@@ -281,7 +281,7 @@
           // Save current location
           window.rnf.currentLocation = payload;
 
-          window.rnf.rnfCurrentMarker = new mapboxgl.Marker({ color: '#0066FF' })
+          window.rnf.rnfCurrentMarker = new mapboxgl.Marker({ color: '#FF3300' })
             .setLngLat([payload.lon, payload.lat])
             .addTo(map);
         }
