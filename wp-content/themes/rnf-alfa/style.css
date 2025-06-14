@@ -3550,7 +3550,7 @@ p > object:only-child {
   }
 
   body,
-  a,
+  /*a,*/
   .site-title a {
     color: #222 !important; /* Make sure color schemes don't affect to print */
   }
