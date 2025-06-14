@@ -62,6 +62,11 @@ function rnf_theme_register_scripts_and_styles() {
   wp_dequeue_script('jquery-scrollto');
   /* Remove twentyseventeen's preconnect for Google Fonts */
   remove_filter('wp_resource_hints', 'twentyseventeen_resource_hints', 10);
+
+  // When doing an archive render, disable lazy loading
+  if (isset($_GET['archive']) && $_GET['archive'] == 'true') {
+    add_filter( 'wp_lazy_loading_enabled', '__return_false' );
+  }
 }
 add_action( 'wp_enqueue_scripts', 'rnf_theme_register_scripts_and_styles', 20 );
 

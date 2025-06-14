@@ -3440,7 +3440,8 @@ p > object:only-child {
   .comment-metadata .edit-link,
   .pingback .edit-link,
   .site-footer aside.widget-area,
-  .site-info {
+  .site-info,
+  #colophon {
     display: none !important;
   }
 
@@ -3454,19 +3455,19 @@ p > object:only-child {
   /* Font sizes */
 
   body {
-    font-size: 12pt;
+    font-size: 11pt;
   }
 
   h1 {
-    font-size: 24pt;
+    font-size: 20pt;
   }
 
   h2 {
-    font-size: 22pt;
+    font-size: 18pt;
   }
 
   h3 {
-    font-size: 17pt;
+    font-size: 16pt;
   }
 
   h4 {
@@ -3481,6 +3482,10 @@ p > object:only-child {
     font-size: 12pt;
   }
 
+  h1, h2, h3, h4, h5, h6, .entry-header, .entry-meta {
+    page-break-after: avoid;
+  }
+
   .page .panel-content .entry-title,
   .page-title,
   body.page:not(.twentyseventeen-front-page) .entry-title {
@@ -3490,8 +3495,8 @@ p > object:only-child {
   /* Layout */
 
   .wrap {
-    padding-left: 5% !important;
-    padding-right: 5% !important;
+    /* padding-left: 5% !important; */
+    /* padding-right: 5% !important; */
     max-width: none;
   }
 
@@ -3506,16 +3511,20 @@ p > object:only-child {
     position: static;
     height: auto;
     padding: 0;
+    background: none !important;
   }
 
   .site-branding {
     position: static;
     margin-top: 0;
-    margin-bottom: 1.75em !important; /* override styles added by JavaScript */
+    padding: 0 !important;
   }
 
   .site-title {
     font-size: 25pt;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-bottom: 0.125em solid black;
   }
 
   .site-description {
@@ -3561,10 +3570,27 @@ p > object:only-child {
     width: 34%;
   }
 
+  .entry-content a {
+    box-shadow: none !important;
+  }
+
   .site-footer {
     padding: 0;
   }
 }
+
+@page {
+  margin: 0.625in 0.825in 0.75in;
+
+  @bottom-right {
+    font-family: "Ringside Regular SSm A", "Ringside Regular SSm B", "Helvetica Neue", helvetica, arial, sans-serif;
+    font-size: 8pt;
+    content: counter(page) " // " counter(pages);
+    margin: 0.125in 0.25in 1in 0;
+  }
+}
+
+
 
 /*--------------------------------------------------------------
 30.0 Route Not Found - Alfa Special Items
