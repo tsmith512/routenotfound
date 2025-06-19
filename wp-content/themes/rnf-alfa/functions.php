@@ -66,6 +66,12 @@ function rnf_theme_register_scripts_and_styles() {
   // When doing an archive render, disable lazy loading
   if (isset($_GET['archive']) && $_GET['archive'] == 'true') {
     add_filter( 'wp_lazy_loading_enabled', '__return_false' );
+    remove_action('wp_footer', 'rnf_analytics_ga_tracking_code_output', 1000);
+
+    wp_dequeue_script('rnf-geo-js');
+    wp_dequeue_style('rnf-geo-style');
+    wp_dequeue_script('mapbox-core');
+    wp_dequeue_style('mapbox-style');
   }
 }
 add_action( 'wp_enqueue_scripts', 'rnf_theme_register_scripts_and_styles', 20 );
