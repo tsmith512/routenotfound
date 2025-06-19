@@ -261,3 +261,37 @@ function twentyseventeen_entry_footer() {
     echo '</footer> <!-- .entry-footer -->';
   }
 }
+
+
+function archive_post_on_save($post_id) {
+    $post = get_post($post_id);
+
+    if ($post->post_status !== 'publish') {
+        return;
+    }
+
+    $data = [
+        'action' => 'create',
+        'site_url' => get_site_url(),
+        'post' => [
+            'id' => $post->ID,
+            'title' => ['rendered' => $post->post_title],
+            'content' => ['rendered' => apply_filters('the_content', $post->post_content)],
+            'link' => get_permalink($post->ID),
+            'date' => $post->post_date,
+            'modified' => $post->post_modified,
+            'slug' => $post->post_name,
+            'status' => $post->post_status
+        ]
+    ];
+
+    wp_remote_post('https://rnf-archiver.tsmithcreative.workers.dev/archive', [
+        'body' => json_encode($data),
+        'headers' => [
+            'Content-Type' => 'application/json',
+            //'Authorization' => 'Bearer ' . YOUR_API_KEY
+        ]
+    ]);
+}
+
+add_action('save_post', 'archive_post_on_save');
