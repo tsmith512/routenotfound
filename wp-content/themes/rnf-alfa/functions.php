@@ -281,7 +281,12 @@ function archive_post_on_save($post_id) {
             'date' => $post->post_date,
             'modified' => $post->post_modified,
             'slug' => $post->post_name,
-            'status' => $post->post_status
+            'status' => $post->post_status,
+            '_embedded' => [
+                'wp:term' => [
+                    get_the_terms($post->ID, 'category') ?: []
+                ]
+            ]
         ]
     ];
 
@@ -295,3 +300,21 @@ function archive_post_on_save($post_id) {
 }
 
 add_action('save_post', 'archive_post_on_save');
+
+
+// Remove iframes when archive=true parameter is present to prevent networkidle issues
+function remove_iframes_for_archiving($content) {
+    if (isset($_GET['archive']) && $_GET['archive'] === 'true') {
+        // Remove all iframe tags from content
+        $content = preg_replace('/<iframe[^>]*>.*?<\/iframe>/is', '', $content);
+        $content = preg_replace('/<iframe[^>]*\/?>/', '', $content);
+        // Clean up extra whitespace
+        $content = preg_replace('/\s+/', ' ', $content);
+        $content = trim($content);
+    }
+    return $content;
+}
+
+// Apply filter to remove iframes for archiving
+add_filter('the_content', 'remove_iframes_for_archiving', 999);
+add_filter('the_excerpt', 'remove_iframes_for_archiving', 999);
