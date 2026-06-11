@@ -47,6 +47,12 @@ function rnf_theme_register_scripts_and_styles() {
   // (Own) Media handlers
   wp_register_script('rnf-alfa-js-media', get_stylesheet_directory_uri() . '/js/media.js', array('fancybox-script', 'jquery'), RNF_VERSION, true);
 
+  // Load Stream Player API and custom script to run videostats experiment
+  wp_register_script('rnf-alfa-stream-player-api', 'https://embed.cloudflarestream.com/embed/sdk.latest.js', array(), RNF_VERSION, true);
+  wp_enqueue_script('rnf-alfa-stream-player-api');
+  wp_register_script('rnf-alfa-js-stream', get_stylesheet_directory_uri() . '/js/stream.js', array('rnf-alfa-stream-player-api'), RNF_VERSION, true);
+  wp_enqueue_script('rnf-alfa-js-stream');
+
   // Was loading this conditionally on `post_gallery` filter, but I haven't
   // figured out how to attach it to Gutenberg blocks yet, and let's face it,
   // this is an entirely photo-driven site, this is actually needed on all
@@ -62,7 +68,7 @@ function rnf_theme_register_scripts_and_styles() {
   wp_dequeue_script('jquery-scrollto');
   /* Remove twentyseventeen's preconnect for Google Fonts */
   remove_filter('wp_resource_hints', 'twentyseventeen_resource_hints', 10);
-
+/*
   // When doing an archive render, disable lazy loading
   if (isset($_GET['archive']) && $_GET['archive'] == 'true') {
     add_filter( 'wp_lazy_loading_enabled', '__return_false' );
@@ -73,6 +79,7 @@ function rnf_theme_register_scripts_and_styles() {
     wp_dequeue_script('mapbox-core');
     wp_dequeue_style('mapbox-style');
   }
+*/
 }
 add_action( 'wp_enqueue_scripts', 'rnf_theme_register_scripts_and_styles', 20 );
 
@@ -262,7 +269,7 @@ function twentyseventeen_entry_footer() {
   }
 }
 
-
+/*
 function archive_post_on_save($post_id) {
     $post = get_post($post_id);
 
@@ -318,3 +325,4 @@ function remove_iframes_for_archiving($content) {
 // Apply filter to remove iframes for archiving
 add_filter('the_content', 'remove_iframes_for_archiving', 999);
 add_filter('the_excerpt', 'remove_iframes_for_archiving', 999);
+*/
