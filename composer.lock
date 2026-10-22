@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4730f884fce75d9d758a909c8d592c3",
+    "content-hash": "6064c69073509927a609ad1e6bbe4040",
     "packages": [
         {
             "name": "composer/installers",
@@ -335,6 +335,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/cloudflare-stream/"
+        },
+        {
+            "name": "wpackagist-plugin/coywolf-video-manager",
+            "version": "1.0.58",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/coywolf-video-manager/",
+                "reference": "tags/1.0.58"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/coywolf-video-manager.1.0.58.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/coywolf-video-manager/"
         },
         {
             "name": "wpackagist-plugin/visual-link-preview",
